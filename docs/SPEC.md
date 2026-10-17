@@ -9,6 +9,94 @@ Every requirement carries an ID. Prefixes: `FR-` functional, `NFR-` non-function
 
 ---
 
+## Task dependency graph (quick reference)
+
+Derived from Section 8.2 "Depends on" and Section 8.3 waves. Section 8.2 is authoritative; when it changes, update this graph and table in the same commit. Per-task reading lists are in `CLAUDE.md` at the repo root.
+
+```mermaid
+flowchart LR
+  subgraph W1
+    T01[T01 scaffold + core utils]
+  end
+  subgraph W2
+    T02[T02 stimuli + encoding]
+    T06[T06 JEV schema/summary/emulator]
+    T10[T10 UI shell]
+  end
+  subgraph W3
+    T03[T03 network builder]
+    T07[T07 replay]
+    T12[T12 charts/dashboard/log]
+    T13[T13 input + params panels]
+  end
+  subgraph W4
+    T04[T04 sim core]
+    T11[T11 circuit view]
+  end
+  subgraph W5
+    T05[T05 readout + calibration]
+    T08[T08 keystore/client/scheduler]
+  end
+  subgraph W6
+    T09[T09 proxy]
+    T14[T14 key modal + About]
+  end
+  subgraph W7
+    T15[T15 main wiring + __mc hook]
+  end
+  subgraph W8
+    T16[T16 E2E + screenshots]
+    T18[T18 README]
+    T19[T19 CF Worker, MAY]
+  end
+  subgraph W9
+    T17[T17 real recording, optional]
+    T20[T20 final review + DoD]
+  end
+  T01 --> T02 & T03 & T06 & T10
+  T02 --> T03 & T13
+  T03 --> T04 & T11
+  T04 --> T05 & T08
+  T06 --> T07 & T08 & T09
+  T07 --> T08 & T09
+  T08 --> T09 & T14
+  T10 --> T11 & T12 & T13 & T14
+  T04 & T05 & T06 & T07 & T08 & T09 & T10 & T11 & T12 & T13 & T14 --> T15
+  T09 --> T16 & T17 & T19
+  T15 --> T16 & T17 & T18
+  T16 --> T17
+  T16 & T17 & T18 & T19 --> T20
+```
+
+T20 depends on all tasks; only its direct predecessors are drawn.
+
+| Task | Wave | Depends on | Unblocks |
+|---|---|---|---|
+| T01 | W1 | — | T02, T03, T06, T10 |
+| T02 | W2 | T01 | T03, T13, T15 |
+| T06 | W2 | T01 | T07, T08, T09, T15 |
+| T10 | W2 | T01 | T11, T12, T13, T14, T15 |
+| T03 | W3 | T01, T02 | T04, T11, T15 |
+| T07 | W3 | T06 | T08, T09, T15 |
+| T12 | W3 | T10 | T15 |
+| T13 | W3 | T02, T10 | T15 |
+| T04 | W4 | T03 | T05, T08, T15 |
+| T11 | W4 | T03, T10 | T15 |
+| T05 | W5 | T04 | T15 |
+| T08 | W5 | T04, T06, T07 | T09, T14, T15 |
+| T09 | W6 | T06, T07, T08 | T16, T17, T19 |
+| T14 | W6 | T08, T10 | T15 |
+| T15 | W7 | T04–T14 | T16, T17, T18 |
+| T16 | W8 | T09, T15 | T17, T20 |
+| T18 | W8 | T15 | T20 |
+| T19 | W8 | T09 | T20 |
+| T17 | W9 (optional) | T09, T15, T16 | T20 |
+| T20 | W9 | all | — |
+
+Milestones: M1 after W6, M2 after W7, M3 after W8, M4 after W9 (Section 8.4).
+
+---
+
 ## 0. Summary
 
 ### 0.1 Pitch
@@ -997,6 +1085,7 @@ package.json                  # dev only: "type":"module", "private":true, engin
 package-lock.json             # committed; CI/verify uses npm ci
 playwright.config.mjs
 README.md
+CLAUDE.md                     # agent index: phases, tasks, SPEC sections per task (keep in sync with Section 8)
 ```
 
 **File ownership (normative).** Every file has exactly one owning task (Section 8.2). T01 creates `index.html` with every region container and every `data-testid` container of Section 4.2 as empty mount elements, plus `css/tokens.css`, `css/base.css` and empty placeholder files for each `css/<component>.css` (so no stylesheet 404s). Later UI tasks only fill their own container from their own JS module and write only their own `css/<component>.css`; no two tasks edit the same file.
