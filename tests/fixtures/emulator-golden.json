@@ -1,0 +1,44 @@
+{
+  "model": "jev-sim",
+  "answers": {
+    "circuit_evidence": {
+      "type": "score",
+      "score": 2.89,
+      "confidence": 0.78,
+      "legend": {
+        "0": "No evidence",
+        "1": "Weak",
+        "2": "Moderate",
+        "3": "Strong",
+        "4": "Unambiguous"
+      },
+      "probabilities": {
+        "0": 0,
+        "1": 0,
+        "2": 0.11,
+        "3": 0.89,
+        "4": 0
+      }
+    },
+    "circuit_novelty": {
+      "type": "noul",
+      "noul": 1
+    },
+    "circuit_orientation": {
+      "type": "choice",
+      "choice": "vertical",
+      "confidence": 0.82,
+      "probabilities": {
+        "vertical": 0.94,
+        "horizontal": 0,
+        "diag45": 0.04,
+        "diag135": 0.02,
+        "none": 0
+      }
+    }
+  },
+  "usage": {
+    "input_tokens": 363,
+    "output_tokens": 60
+  }
+}
