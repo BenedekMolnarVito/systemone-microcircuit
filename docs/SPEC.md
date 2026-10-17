@@ -367,9 +367,9 @@ p_k = exp((a_k − max_j a_j)/τ_c) / Σ_j exp((a_j − max_j a_j)/τ_c)
 
 | Population | k | Collateral ID | Targets (compartment, w mV, p_conn, delay) | b_k | γ_k |
 |---|---|---|---|---|---|
-| L4E (group o) | 0 | `ascending` | L23E group o (basal, 12, 1.0, d_E) | 0.5 | 0 |
+| L4E (group o) | 0 | `ascending` | L23E group o (basal, 36, 1.0, d_E) | 0.5 | 0 |
 | L4E | 1 | `recurrent` | other L4E of the same group o, excluding self (basal, 4, 0.5, d_E) | 0 | 0 |
-| L23E (group o) | 0 | `output` | L5E group o (basal, 12, 1.0, d_E) | 0 | 4 |
+| L23E (group o) | 0 | `output` | L5E group o (basal, 48, 1.0, d_E) | 0 | 4 |
 | L23E | 1 | `recurrent` | other L23E of the same group o, excluding self (basal, 4, 0.5, d_E) | 0.3 | 0 |
 | L23E | 2 | `lateral` | all L23SST (soma, 6, 1.0, d_E) | −0.3 | 0 |
 | L5E (group o) | 0 | `output` | none (spikes routed here are the readout's output spikes, FR-RO-01) | 0.5 | 1 |
@@ -1913,3 +1913,5 @@ Source tags: **[C]** cited in the source conversation and verified in R1; **[R]*
 | Date | Parameter | Old | New | Reason / evidence |
 |---|---|---|---|---|
 | 2026-10-17 | (initial design values) | — | as Section 2.3/2.5/2.6 | spec draft S1 |
+| 2026-10-18 | `ascending` weight (L4E→L23E, Section 2.5) | 12 | 36 (×3) | T05: with defaults L5E fired ~4 Hz (vbar, seed 42) → local readout `nothing`, 0/10 seeds correct by 500 ms on vbar/hbar/diag45/diag135. `wIn` alone cannot fix (wIn 180/360 collapses L4E selectivity, L5E still 4–7 Hz). |
+| 2026-10-18 | `output` weight (L23E→L5E, Section 2.5) | 12 | 48 (×4) | T05, same reason. Measured after (Section 2.11, seed 42, 200–1200 ms): vbar L4E vertical 31.75 Hz, others 0.75/1.25/1.75 Hz; blank L4E 0.25, L23E 0.56, L5E 0.38 Hz; white L4E 0.06 Hz; readout correct 10/10 for each of vbar/hbar/diag45/diag135 (seeds 1–10); 0 runaway warnings (11 presets × seeds 1–10, 1200 ms). `wIn` 90, `wFfPv` 0.4, inhibitory bases unchanged. |

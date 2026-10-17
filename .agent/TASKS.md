@@ -36,7 +36,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T13 | W3 | input + params panels | done (node --check) | node --check |
 | T04 | W4 | sim core | done (71/77 pass 0 fail; U-60/E14 SPEC amended τ_m=1) | U-05–16, 21, 22, 30–36, 60, 61 |
 | T11 | W4 | circuit view | done (node --check) | node --check |
-| T05 | W5 | readout + calibration | in-progress 2026-10-18 | U-59, calibration table |
+| T05 | W5 | readout + calibration | done (calibration table all pass; 27/27 core tests controller ran) | U-59, calibration table |
 | T08 | W5 | keystore/client/scheduler | in-progress 2026-10-18 | U-23, 37, 38, 41, 44–49, 52–56, 58 |
 | T09 | W6 | proxy | todo | P-01–P-22 |
 | T14 | W6 | key modal + About | todo | U-57 |

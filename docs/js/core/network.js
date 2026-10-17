@@ -14,8 +14,8 @@ const GROUP = { L4E: 4, L23E: 4, L5E: 2 }; // neurons per orientation group
 
 // Collateral defs (SPEC 2.5): [id, b, gamma, targetPop|null, comp, w, p, sameGroup]
 const COLLATERALS = {
-  L4E: [['ascending', 0.5, 0, 'L23E', COMP.BASAL, 12, 1, 'group'], ['recurrent', 0, 0, 'L4E', COMP.BASAL, 4, 0.5, 'others']],
-  L23E: [['output', 0, 4, 'L5E', COMP.BASAL, 12, 1, 'group'], ['recurrent', 0.3, 0, 'L23E', COMP.BASAL, 4, 0.5, 'others'],
+  L4E: [['ascending', 0.5, 0, 'L23E', COMP.BASAL, 36, 1, 'group'], ['recurrent', 0, 0, 'L4E', COMP.BASAL, 4, 0.5, 'others']],
+  L23E: [['output', 0, 4, 'L5E', COMP.BASAL, 48, 1, 'group'], ['recurrent', 0.3, 0, 'L23E', COMP.BASAL, 4, 0.5, 'others'],
     ['lateral', -0.3, 0, 'L23SST', COMP.SOMA, 6, 1, 'all']],
   L5E: [['output', 0.5, 1, null], ['recurrent', 0, 0, 'L5E', COMP.BASAL, 4, 1, 'others']],
 };

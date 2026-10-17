@@ -11,3 +11,4 @@
 - T07: findMatch doesn't re-run validateResponse → T08 client must (FR-REC-05). extra export requestHash; serializeLogEntry whitelist.
 - T04: sim extras: getters params/seed/stimulusId, routesSince(n0)→[{n,src,k,p}], state.weights[src][k][s]. setParams seed change reseeds streams only → T15 rebuild network on seed change. SPEC U-60/E14 amended: +τ_m=1 (controller ruling; recheck after T05 calibration).
 - T05 BLOCKED (L5E readout 0/10): controller ruling → T05 may edit network.js weight constants + SPEC §2.5 + App A. Resumed. localReadout extra 5th arg routing='hard'.
+- T05: localReadout(..., routing='hard') extra 5th arg → T15 pass 'soft' when soft routing. Weights: ascending 36, output 48 (network.js).
