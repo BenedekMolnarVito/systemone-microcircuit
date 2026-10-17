@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done: W1-W4 + T05. Running: T08, FX1 (RV1 fixes: sim.js, jev summary/replay/emulator tests).
+- Done: W1-W5 (T01-T08, T10-T13). Running: FX1 (RV1 fixes), T09 proxy, T14 key modal+About. Next: T15 main wiring (opus) once all land.
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol
