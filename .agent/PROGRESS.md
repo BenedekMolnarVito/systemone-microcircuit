@@ -27,3 +27,6 @@ Goal (/goal): docs/SPEC.md (impl-ready for multi-agent long-horizon session, bro
 - Fixture keys contain FAKE. package-lock committed (dev-only Playwright).
 
 Blockers: none.
+
+- 2026-10-17: S2 done + verified, committed 88ef42b (SPEC v1.1). V2 scoped re-review dispatched (reviewer → .agent/reports/V2.md). Next: fix V2 findings, then D1 README from SPEC §9.
+- V2 done PASS-WITH-FIXES (1C/10I). S3 dispatched (implementer opus): apply V2 fixes, then README from §9 (D1).
