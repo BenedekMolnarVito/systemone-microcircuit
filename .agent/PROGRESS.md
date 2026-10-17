@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done+committed: T01, T02, T10, T03, T06, T13. Running: T04 (opus), T07. T11, T12 done.
+- Done: T01-T04, T06, T07, T10-T13 (W1-W4). Running W5: T05, T08.
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol
@@ -10,3 +10,4 @@ Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "P
 - none
 ## Decisions
 - No worktrees: file sets disjoint per wave, controller sole committer.
+- U-60/E14 + τ_m=1 (guard unreachable otherwise; T04 evidence).

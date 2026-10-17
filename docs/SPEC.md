@@ -1433,7 +1433,7 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 | U-57 | about.test | Imports `docs/js/ui/about-content.js`: every section (`pitch`, `mapping`, `established`, `proposal`, `simplification`, `refs`) non-empty; `proposal` contains the exact sentence "Noul is a probability; spike is a Bernoulli sample of the per-step hazard derived from it."; `simplification` contains the FR-SCI-09 text verbatim; every `[n]` citation is in 1..39; no text matches `/roadmap|200.?300 ms|Douglas.{0,20}1995|SE-SNN|AllenYolk|\u03C4_N|tau[N]/i` |
 | U-58 | scheduler.test | `applyControl`: evidence score s = 4 → β = 0.5; s = 0 → −0.5; novelty ν = 0.2 → M = 0.7; `jevControl` off → β = 0, M = 1 (FR-JEV-17/18) |
 | U-59 | readout.test | `agree('vertical','vertical')` → true; `agree('vertical','none')` → false; `agree('nothing','none')` and `agree('uncertain','none')` → true; `agree(x, null)` → null (FR-RO-03) |
-| U-60 | sim.test | Runaway: θ = 5, g = 0, σ_V = 10 (as E14) → `dampGain` < 1 and `runawayActive` true within 1000 ms sim; then DEFAULTS restored → `dampGain` back to 1.0 within 10 000 ms sim (FR-SIM-12 recovery) |
+| U-60 | sim.test | Runaway: θ = 5, g = 0, σ_V = 10, τ_m = 1 (as E14; without τ_m = 1 mean E rate ≈ 81 Hz stays below the 150 Hz trigger) → `dampGain` < 1 and `runawayActive` true within 1000 ms sim; then DEFAULTS restored → `dampGain` back to 1.0 within 10 000 ms sim (FR-SIM-12 recovery) |
 | U-61 | sim.test | `setParams({g: 8})` doubles every inhibitory effective weight vs g = 4 without reset and without changing stored base weights (FR-NET-03) |
 | U-62 | stimuli.test | `makePreset` for all 11 preset IDs returns 256 values in [0, 1]; `makePreset('noise', s)` is identical across calls and differs for another seed; `effectiveIntensity(img, 1, 0, z)` = `img`; `rates` follows FR-ENC-04 (`x' = 0` → r_base, `x' = 1` → r_max) (FR-ENC-02 … 04) |
 
@@ -1485,7 +1485,7 @@ All use `?test=1&autoplay=0&seed=42` unless stated and follow the screenshot pro
 | E11 | `colorScheme: 'light'` | `--bg` computed `#f6f8fb`; contrast ≥ 4.5 | `E11-light.png` |
 | E12 | `page.route('**/data/jev-recording.json')` fulfils with `tests/fixtures/recording.json`; reload; select REPLAY; click `vbar`, `runSteps(4000)` | badge `REPLAY JEV`; log entries `exact` or `nearest` | `E12-replay.png` |
 | E13 | Open About | sections `about-pitch`, `about-mapping`, `about-established`, `about-proposal`, `about-simplification`, `about-refs` visible and non-empty; FR-SCI-01 sentence, statement 1.5 and FR-SCI-09 text present | `E13-about.png` |
-| E14 | Set θ = 5, g = 0, σ_V = 10, `runSteps(6000)` | `runaway-warning` visible | `E14-runaway.png` |
+| E14 | Set θ = 5, g = 0, σ_V = 10, τ_m = 1, `runSteps(6000)` | `runaway-warning` visible | `E14-runaway.png` |
 | E15 | Mocked LIVE, set `param-budget` 2, `param-liveMinIntervalMs` 1000, auto JEV on; loop up to 3×: `runSteps(1000)`, wait until a new `jev-log-entry` with status `ok` appears (max 5 s), wait 1100 ms wall | after 2 calls: banner budget, badge SIMULATED, `mode-select-live` disabled while `used ≥ cap` | `E15-budget.png` |
 | E16 | `reducedMotion: 'reduce'` | no element with class `particle` exists during run; node fills still change | `E16-reduced-motion.png` |
 | E34 | WITHOUT `?test=1` (normal motion), `?autoplay=1&seed=42`, speed 1000, `vbar`, 3 s wall; sample every 100 ms | number of `.particle` elements never exceeds 300 (FR-UI-12) | — |
