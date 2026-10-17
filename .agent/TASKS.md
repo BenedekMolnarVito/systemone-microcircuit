@@ -27,7 +27,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | ID | Wave | Desc | Status | Verify by |
 |----|------|------|--------|-----------|
 | T01 | W1 | scaffold + core utils | done (34 tests: 20 pass, 14 skip pending modules, 0 fail; controller ran) | U-01–04, U-40, U-50, U-51 green |
-| T02 | W2 | stimuli + encoding | in-progress 2026-10-18 | U-08, U-19, U-20, U-62 |
+| T02 | W2 | stimuli + encoding | done (stimuli+encoding tests green, controller ran) | U-08, U-19, U-20, U-62 |
 | T06 | W2 | JEV schema/summary/emulator | in-progress 2026-10-18 | U-24–29, U-26b, U-42, U-43 |
 | T10 | W2 | UI shell | in-progress 2026-10-18 | node --check |
 | T03 | W3 | network builder | todo | U-17, U-18 |
