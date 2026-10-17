@@ -1,0 +1,8 @@
+.preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 4px; }
+.preset-grid button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px; font-size: 11px; }
+.preset-grid canvas { width: 32px; height: 32px; image-rendering: pixelated; }
+.preset-grid button[aria-pressed="true"], [data-testid^="brush-"][aria-pressed="true"] { outline: 2px solid var(--accent); }
+[data-testid="stimulus-preview"] { width: 128px; height: 128px; image-rendering: pixelated; }
+[data-testid="draw-canvas"] { width: 192px; height: 192px; touch-action: none; cursor: crosshair; background: #000; }
+#input-panel label, #params-panel label { display: block; margin: 4px 0; }
+#params-panel input[type="range"] { vertical-align: middle; }
