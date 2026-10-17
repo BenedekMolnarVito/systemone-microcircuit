@@ -4,6 +4,7 @@ Goal (/goal): docs/SPEC.md (impl-ready for multi-agent long-horizon session, bro
 ## State
 - Done: R1/R2/R3 research (.agent/reports/), S1 draft SPEC (commit 85441ce), V1 3 reviews (commit 2d9c9f8).
 - IN FLIGHT at cut-off: S2 fix-wave subagent editing docs/SPEC.md per .agent/briefs/S2.md (writes .agent/reports/S2.md when done).
+- 2026-10-17 resume: S2 child died partial (changelog v1.1 + R3 line done; ?api= L1150 + unit cmd L1501 remain, no S2.md). Re-dispatched S2 (opus implementer) to finish on top of partial diff.
 
 ## RESUME STEPS
 1. `git status` / `git diff --stat docs/SPEC.md`. If .agent/reports/S2.md exists → S2 finished. If not and SPEC diff empty/partial → child likely died: re-dispatch S2 (implementer, model opus) with prompt "Task S2. Read .agent/briefs/S2.md first — authoritative…" (edits are idempotent: brief describes target state). Don't run two writers.
