@@ -35,7 +35,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T12 | W3 | charts/dashboard/log | in-progress 2026-10-18 | node --check |
 | T13 | W3 | input + params panels | done (node --check) | node --check |
 | T04 | W4 | sim core | in-progress 2026-10-18 | U-05–16, 21, 22, 30–36, 60, 61 |
-| T11 | W4 | circuit view | in-progress 2026-10-18 | node --check |
+| T11 | W4 | circuit view | done (node --check) | node --check |
 | T05 | W5 | readout + calibration | todo | U-59, calibration table |
 | T08 | W5 | keystore/client/scheduler | todo | U-23, 37, 38, 41, 44–49, 52–56, 58 |
 | T09 | W6 | proxy | todo | P-01–P-22 |

@@ -1,0 +1,20 @@
+[data-testid="circuit-svg"] { width: 100%; height: auto; display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+#circuit-panel { position: relative; }
+[data-testid="circuit-svg"] text { fill: var(--text-muted); font-size: 12px; font-family: var(--mono); }
+[data-testid="circuit-svg"] .ori { font-size: 14px; }
+.px { fill: var(--surface-2); stroke: var(--bg); stroke-width: .5; }
+.px.on { fill: var(--spike); }
+.neuron { cursor: pointer; outline: none; }
+.neuron path, .neuron circle { fill: var(--surface-2); stroke: var(--border); stroke-width: 1; transition: fill 120ms; }
+.neuron.exc { color: var(--exc); } .neuron.pv { color: var(--pv); } .neuron.sst { color: var(--sst); } .neuron.vip { color: var(--vip); }
+.neuron path, .neuron circle { stroke: currentColor; }
+.neuron.spk path, .neuron.spk circle, .lg-spk { stroke: var(--spike); stroke-width: 3; filter: drop-shadow(0 0 4px var(--spike)); }
+.lg-spk { fill: var(--surface-2); }
+.neuron.sel path, .neuron.sel circle, .neuron:focus-visible path, .neuron:focus-visible circle { stroke: var(--accent); stroke-width: 2px; }
+.neuron:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.col { fill: none; stroke: var(--border); stroke-width: 1; opacity: .35; }
+.col.flash { stroke: var(--spike); opacity: 1; stroke-width: 2; }
+.dot { fill: var(--spike); pointer-events: none; }
+[data-testid="tooltip"] { position: absolute; z-index: 5; pointer-events: none; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; font: 12px var(--mono); }
+[data-testid="tooltip"][hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .neuron path, .neuron circle { transition: none; } }
