@@ -1,7 +1,7 @@
 # SystemOne Microcircuit — Specification
 
-**Version:** 1.2 (fix wave S3, 2026-10-17)
-**Changelog:** v1.2 — applied re-review V2: README PowerShell key line no longer matches the U-40 scan, T01 fixes scan hits in `.agent/`/`docs/`, DoD history check limited to added lines since 88ef42b; per-scenario console-error filter (E07/E07b/E21, E18 exempt); E15/E07b loop reaches 2 LIVE calls; retry classified by `error.code` only (U-47, missing code → `malformed`); `createScheduler` takes injected `getLocalLabel`; `spikeHazard` exported for U-07; U-50 checks only existing files; `tests/unit/live-real.test.mjs` owned by T09 (FR-TST-08 exception); T09 depends on T08 and moved to W6 (M1 after W6); T15 verify no longer needs T16; matrix rows for FR-ARCH-02a, FR-REC-01a/01b; duplicate task-table header removed. v1.1 — applied review findings V1-sec, V1-impl, V1-sci: Noul redefined as the probability of ≥ 1 spike within a 10 ms window (the old fixed-rate constant removed; per-step hazard `p_step = 1 − (1 − Noul)^(dt/W)`); scaling numbers corrected and disanalogies disclosed; API-base URL parameter removed, key flow and storage restricted to the same-origin proxy, Cloudflare Worker documented as open credit spender; error-code table and retry rules; fixture keys must contain `FAKE`/`SENTINEL`/`REDACTED`; quoted unit-test glob, Node ≥ 22 for dev, committed lockfile; proxy `--mock-upstream`/`--no-api` replace python, env-isolated tests, Playwright trace/video off, `.gitignore`; determinism (named PRNG streams, build/STDP/tick order, sim-time debounce, scheduler module); `window.__mc` test hook and screenshot protocol; isolated-neuron test harness; module homes for helpers; file ownership (T01 owns `index.html` + `base.css`, per-component CSS) and rechecked waves; About content specified with tests (U-57); recording stores only validated answers; T17 automated and optional; owner URL fixed; references [2] and [10] corrected; FR → test traceability matrix (Section 7.4). v1.0 — draft S1.
+**Version:** 1.3 (browser smoke scenarios, 2026-10-17)
+**Changelog:** v1.3 — task dependency graph at the top; Section 7.5 browser smoke scenarios S01–S06 (FR-TST-10 … 13): JSON scenarios in `browser-scenarios/`, recorded once via the `jev-browser` skill (JEV micro-decisions over the DOM), replayed with zero model calls by the skill and by `tests/e2e/smoke.spec.mjs`; new task T21 (W9); file tree, matrix, milestones and DoD updated; `CLAUDE.md` index added. v1.2 — applied re-review V2: README PowerShell key line no longer matches the U-40 scan, T01 fixes scan hits in `.agent/`/`docs/`, DoD history check limited to added lines since 88ef42b; per-scenario console-error filter (E07/E07b/E21, E18 exempt); E15/E07b loop reaches 2 LIVE calls; retry classified by `error.code` only (U-47, missing code → `malformed`); `createScheduler` takes injected `getLocalLabel`; `spikeHazard` exported for U-07; U-50 checks only existing files; `tests/unit/live-real.test.mjs` owned by T09 (FR-TST-08 exception); T09 depends on T08 and moved to W6 (M1 after W6); T15 verify no longer needs T16; matrix rows for FR-ARCH-02a, FR-REC-01a/01b; duplicate task-table header removed. v1.1 — applied review findings V1-sec, V1-impl, V1-sci: Noul redefined as the probability of ≥ 1 spike within a 10 ms window (the old fixed-rate constant removed; per-step hazard `p_step = 1 − (1 − Noul)^(dt/W)`); scaling numbers corrected and disanalogies disclosed; API-base URL parameter removed, key flow and storage restricted to the same-origin proxy, Cloudflare Worker documented as open credit spender; error-code table and retry rules; fixture keys must contain `FAKE`/`SENTINEL`/`REDACTED`; quoted unit-test glob, Node ≥ 22 for dev, committed lockfile; proxy `--mock-upstream`/`--no-api` replace python, env-isolated tests, Playwright trace/video off, `.gitignore`; determinism (named PRNG streams, build/STDP/tick order, sim-time debounce, scheduler module); `window.__mc` test hook and screenshot protocol; isolated-neuron test harness; module homes for helpers; file ownership (T01 owns `index.html` + `base.css`, per-component CSS) and rechecked waves; About content specified with tests (U-57); recording stores only validated answers; T17 automated and optional; owner URL fixed; references [2] and [10] corrected; FR → test traceability matrix (Section 7.4). v1.0 — draft S1.
 **Owner / idea:** Benedek Molnár
 **Status:** Implementation-ready specification. This document is the single source of truth for the demo. Requirement keywords MUST, MUST NOT, SHOULD, SHOULD NOT and MAY follow RFC 2119.
 
@@ -51,6 +51,7 @@ flowchart LR
   end
   subgraph W9
     T17[T17 real recording, optional]
+    T21[T21 browser smoke scenarios]
     T20[T20 final review + DoD]
   end
   T01 --> T02 & T03 & T06 & T10
@@ -64,8 +65,9 @@ flowchart LR
   T04 & T05 & T06 & T07 & T08 & T09 & T10 & T11 & T12 & T13 & T14 --> T15
   T09 --> T16 & T17 & T19
   T15 --> T16 & T17 & T18
-  T16 --> T17
-  T16 & T17 & T18 & T19 --> T20
+  T16 --> T17 & T21
+  T15 --> T21
+  T16 & T17 & T18 & T19 & T21 --> T20
 ```
 
 T20 depends on all tasks; only its direct predecessors are drawn.
@@ -86,11 +88,12 @@ T20 depends on all tasks; only its direct predecessors are drawn.
 | T08 | W5 | T04, T06, T07 | T09, T14, T15 |
 | T09 | W6 | T06, T07, T08 | T16, T17, T19 |
 | T14 | W6 | T08, T10 | T15 |
-| T15 | W7 | T04–T14 | T16, T17, T18 |
-| T16 | W8 | T09, T15 | T17, T20 |
+| T15 | W7 | T04–T14 | T16, T17, T18, T21 |
+| T16 | W8 | T09, T15 | T17, T21, T20 |
 | T18 | W8 | T15 | T20 |
 | T19 | W8 | T09 | T20 |
 | T17 | W9 (optional) | T09, T15, T16 | T20 |
+| T21 | W9 | T15, T16 | T20 |
 | T20 | W9 | all | — |
 
 Milestones: M1 after W6, M2 after W7, M3 after W8, M4 after W9 (Section 8.4).
@@ -1077,6 +1080,7 @@ tools/
 tests/
   unit/*.test.mjs
   e2e/*.spec.mjs
+  e2e/smoke.spec.mjs          # T21: replays browser-scenarios/*.json (FR-TST-12)
   fixtures/recording.json
   screenshots/
   EVIDENCE.md
@@ -1084,6 +1088,7 @@ tests/
 package.json                  # dev only: "type":"module", "private":true, engines, exact-pinned devDependency
 package-lock.json             # committed; CI/verify uses npm ci
 playwright.config.mjs
+browser-scenarios/*.json      # T21: smoke scenarios S01–S06 (Section 7.5)
 README.md
 CLAUDE.md                     # agent index: phases, tasks, SPEC sections per task (keep in sync with Section 8)
 ```
@@ -1349,7 +1354,7 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 
 ## 7. Test plan
 
-### 7.1 Tooling (FR-TST-01 … 09)
+### 7.1 Tooling (FR-TST-01 … 09; smoke scenarios FR-TST-10 … 13 in Section 7.5)
 
 - FR-TST-01 Unit tests: `node --test "tests/unit/*.test.mjs"` (quoted glob, expanded by Node itself, so identical in bash, PowerShell and cmd; Node ≥ 22). No dependencies.
 - FR-TST-02 E2E: Playwright `@playwright/test` pinned exactly to `1.49.1` in `package.json` `devDependencies` (FR-ARCH-02a); `package-lock.json` committed; install with `npm ci` then `npx playwright install chromium`; run `npx playwright test`. The demo itself never requires npm.
@@ -1615,6 +1620,25 @@ Every requirement has at least one test. "DoD" = checked in the Definition of Do
 | FR-TST-08 | P-02, P-19 |
 | FR-TST-09 | E29, E02 |
 | FR-DOC-01, FR-DOC-02 | DoD |
+| FR-TST-10 … 13 | S01–S06 (both replay paths, FR-TST-12) |
+
+### 7.5 Browser smoke scenarios (FR-TST-10 … 13)
+
+Smoke tests are short UI flows saved as JSON and replayed deterministically with **zero model calls**, so re-running them never spends tokens or JEV credits. During development, agents record and replay them with the global Claude Code skill `jev-browser` (`~/.claude/skills/jev-browser`, modelled on `browser-use/jev-ultrafast`): DOM element table + JEV micro-decisions, no screenshots, goal and assertions set by the orchestrator. In CI and for humans the same files run through Playwright, so the repo never depends on the skill.
+
+- FR-TST-10 Scenario files live in `browser-scenarios/<name>.json` (repo root) in the `jev-browser` scenario format: `{"name", "goal", "startUrl", "inputs": {KEY: literal | "${env:NAME}"}, "steps": [...], "assertions": [...], "recorded": {"at", "by": "jev"|"manual", "jevModel", "jevCalls"}}`, plus the repo-specific field `"server": "static"|"mock"` (ignored by the skill). Step ops used here: `goto`, `click`, `type`, `press` (`key` in Playwright naming, e.g. `Space`), `js`, `wait_for` (flat fields `testid` | `text` | `ms`; `ms` not allowed here). Click/type targets in this repo MUST use `{"testid": "<data-testid>"}` (Section 4.2), so resolution is exact; `role`/`name` fallback targets are not allowed here. The skill resolves click targets from its element table, which holds only interactive elements (buttons, inputs, `role="button"` nodes such as `neuron-*`). Relative `startUrl` is resolved against the base URL of the server under test. Assertion types used here: `js` (expression returning `true`; used for every element-scoped text check, because `text_contains` checks whole-page text only), `text_contains` (page text), `console_errors_max` (`{max: 0, ignore: <one regex>}`; the skill sees in-page `console.error` and uncaught errors; the Playwright interpreter applies the full FR-TST-07 filter).
+- FR-TST-11 Recording (task T21, once, after M2): for each row below the agent writes a goal file (goal text, `startUrl`, inputs, the listed assertions) and runs `jev-browser goal` against the stated server, then `jev-browser save --name <name>`. The skill's own JEV calls are billed to the developer's key (≤ 25 per scenario, ≤ 150 total); without a key the agent drives with the skill's generic controls (`observe`/`click`/`type`/`eval`) and saves with `recorded.by = "manual"`. The app itself always runs on `--no-api` or `--mock-upstream`, so recording never makes billed app calls. After saving, the agent checks that every target is a `testid` and adds the `server` field (edit the file if the recorder stored a role/name target).
+- FR-TST-12 Replay: (a) agents: `node ~/.claude/skills/jev-browser/scripts/jev-browser.mjs replay <name> --base-url <url>` → `status: pass`, 0 JEV calls; (b) CI/humans: `tests/e2e/smoke.spec.mjs` loads every `browser-scenarios/*.json`, maps each step to Playwright (`testid` → `page.getByTestId`, `type` → `fill` with resolved input, `press` → `page.keyboard.press(step.key)`, `js` → `page.evaluate`, `wait_for` → `page.getByTestId(step.testid).first().waitFor()` or `page.getByText(step.text).first().waitFor()`), evaluates the assertions in code and runs against the FR-TST-03 servers (`server`: `static` → port 8080, `mock` → port 8790). Both replays MUST pass on the same files. A failing replay is a regression, never silently re-recorded; re-record only when the UI change is intended and say so in the commit message.
+- FR-TST-13 Scenario files contain no key values: typed keys are literals containing `FAKE` (U-40 scans `browser-scenarios/`). Smoke scenarios store no screenshots; visual evidence stays in Section 7.3.
+
+| ID | Name / server | Steps (after `startUrl` `/?test=1&autoplay=0&seed=42`) | Assertions |
+|---|---|---|---|
+| S01 | `smoke-load-static` / static | — | js `document.querySelector('[data-testid="mode-badge"]').textContent.includes('SIMULATED JEV')`; js `document.querySelectorAll('[data-testid^="neuron-"]').length === 58`; js `document.querySelector('[data-testid="btn-key"]').disabled === true`; `console_errors_max` 0 (FR-TST-07 filter) |
+| S02 | `smoke-run-vbar` / static | click `stimulus-preset-vbar`; js `window.__mc.runSteps(2000)` | js `document.querySelector('[data-testid="readout-local"]').textContent.includes('vertical')`; js `window.__mc.getState().t >= 1000` |
+| S03 | `smoke-inspect-neuron` / static | click `neuron-L23E-1`; js `window.__mc.runSteps(200)` | js `document.querySelector('[data-testid="selected-neuron-label"]').textContent.includes('L23E-1')` |
+| S04 | `smoke-about` / static | click `btn-about` | `about-established`, `about-proposal`, `about-simplification` each exist with non-empty text (js `['about-established','about-proposal','about-simplification'].every(id => document.querySelector(`[data-testid="${id}"]`)?.textContent.trim().length > 0)`) |
+| S05 | `smoke-live-mock` / mock | click `mode-select-live`; click `btn-ask-jev`; `wait_for` `{testid: "jev-log-entry"}` | js `document.querySelector('[data-testid="mode-badge"]').textContent.includes('LIVE JEV')`; js `document.querySelector('[data-testid="jev-log-entry"]').textContent.includes('jev-mock')`; js `document.querySelector('[data-testid="jev-budget"]').textContent.includes('1 / 50')` |
+| S06 | `smoke-keyboard` / static | press `Space`; press `Space`; press `s` (FR keyboard map, Section 4.5) | js `window.__mc.getState().run === false`; js `window.__mc.getState().n >= 1` |
 
 ---
 
@@ -1648,8 +1672,9 @@ Unit verify command for every task: `node --test "tests/unit/*.test.mjs"` (quote
 | T13 | Input panel + params panel | `docs/js/ui/{input-panel,params-panel}.js`, `docs/css/panels.css` | T02, T10 | `node --check`; E02, E17, E33 after T15 |
 | T14 | Key modal + About drawer + About content | `docs/js/ui/{key-modal,about,about-content}.js`, `docs/css/dialogs.css`, `tests/unit/about.test.mjs` | T08, T10 | U-57; E05, E13, E31 after T15 |
 | T15 | Main wiring, rAF loop, keyboard, URL params, `window.__mc` test hook | `docs/js/main.js`, `docs/js/ui/keyboard.js` | T04–T14 | `node --check` on both files; manual smoke: `node tools/jev-proxy.mjs --mock-upstream` → app runs in SIMULATED and LIVE without console errors; E01 green after T16 |
-| T16 | E2E suite, screenshots, EVIDENCE | `tests/e2e/*.spec.mjs` (except `record.spec.mjs`), `playwright.config.mjs`, `tests/screenshots/*`, `tests/EVIDENCE.md` | T09, T15 | `npm ci && npx playwright install chromium && npx playwright test`: E01–E34 green (E19 soft) |
+| T16 | E2E suite, screenshots, EVIDENCE | `tests/e2e/*.spec.mjs` (except `record.spec.mjs` and `smoke.spec.mjs`), `playwright.config.mjs`, `tests/screenshots/*`, `tests/EVIDENCE.md` | T09, T15 | `npm ci && npx playwright install chromium && npx playwright test`: E01–E34 green (E19 soft) |
 | T17 | Record real JEV session (automated, FR-REC-07; OPTIONAL) | `tests/e2e/record.spec.mjs`, `docs/data/jev-recording.json` (replaces T07 placeholder) | T09, T15, T16 | needs `JEV_LIVE_TEST=1` + key; then U-40 and E12 green with the real file. Without a key: mark `deferred` in TASKS.md; non-blocking |
+| T21 | Browser smoke scenarios (Section 7.5) | `browser-scenarios/*.json`, `tests/e2e/smoke.spec.mjs` | T15, T16 | skill replay of S01–S06 → all `pass`, 0 JEV calls; `npx playwright test tests/e2e/smoke.spec.mjs` green |
 | T18 | README guide (Section 9) | `README.md` | T15 | every command in it run once (unit tests, `--no-api` server, proxy `--help`) |
 | T19 | Cloudflare Worker template (MAY) | `tools/cf-worker.js` | T09 | `node --check tools/cf-worker.js`; header comment contains the Section 5.7 warning verbatim |
 | T20 | Final review + DoD | enables the U-50 tree case in `tests/unit/dom-free.test.mjs` (hand-over from T01) | all | DoD checklist below |
@@ -1666,7 +1691,7 @@ Unit verify command for every task: `node --test "tests/unit/*.test.mjs"` (quote
 | W6 | T09, T14 |
 | W7 | T15 |
 | W8 | T16, T18, T19 |
-| W9 | T17 (optional), then T20 |
+| W9 | T17 (optional), T21, then T20 |
 
 Rechecked after v1.2 (T09 moved to W6): no file appears in two tasks of the same wave. Sequential hand-overs only: `docs/js/core/params.js` (T01 → T05), `docs/data/jev-recording.json` (T07 → T17), `tests/unit/dom-free.test.mjs` (T01 → T20). `summary.js` (T06) needs `sim.js` interfaces from Section 5.2 only; it is tested against a stub until T04 lands.
 
@@ -1675,12 +1700,13 @@ Rechecked after v1.2 (T09 moved to W6): no file appears in two tasks of the same
 - M1 (after W6): sim core + JEV layer + scheduler + proxy fully unit-tested headless.
 - M2 (after W7): complete app usable in SIMULATED and mocked LIVE modes.
 - M3 (after W8): E2E green, screenshots and evidence committed, README written.
-- M4 (after W9, optional): real recording shipped, REPLAY live on GitHub Pages.
+- M4 (after W9): smoke scenarios S01–S06 replay green (T21); optional real recording shipped, REPLAY live on GitHub Pages.
 
 ### 8.5 Definition of Done
 
 - [ ] `node --test "tests/unit/*.test.mjs"` green on Node ≥ 22 (all U- and P- tests, including the U-50 tree case).
 - [ ] `npm ci && npx playwright install chromium && npx playwright test` green (E19 may be soft-failed on CI hardware), run with `TYPESAFE_API_KEY` set in the shell to prove isolation (FR-TST-08).
+- [ ] Smoke scenarios S01–S06 (Section 7.5) pass in both replay paths (skill `replay` with 0 JEV calls, and `tests/e2e/smoke.spec.mjs`).
 - [ ] Every screenshot listed in Section 7.3 exists in `tests/screenshots/` and is described in `tests/EVIDENCE.md`.
 - [ ] Calibration table (Section 2.11) passes; Appendix A updated if weights changed.
 - [ ] U-40 secret scan green, including with `TYPESAFE_API_KEY` set in the environment; `git log -p 88ef42b..HEAD | grep -E '^\+' | grep -E <U-40 patterns>` (added lines only) shows only matches containing `FAKE`, `SENTINEL` or `REDACTED`. Earlier history contains only the known fake placeholder literals starting `sk-abcdefgh` and `sk-test-abcd` (spec drafts and review reports, since edited to contain `FAKE`) and needs no rewrite.

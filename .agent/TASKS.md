@@ -13,3 +13,11 @@ Source: "I had an idea in my dreams. What if JEV (Typesafe)(1).md" (Perplexity c
 | V2 | Scoped re-review v1.1 | done (PASS-WITH-FIXES: 1C/10I, reports/V2.md) | report |
 | S3 | Apply V2 C-1 + I-1..I-10 | done 2026-10-17 (grep empty, key scan CLEAN, all V2 IDs in reports/S3.md) | grep + V2 IDs mapped in reports/S3.md |
 | D1 | README guide + commit | done 2026-10-17 (README from SPEC §9, reviewed by controller) | git log |
+
+## Phase 2 — JEV browser skill + smoke testing (2026-10-17)
+| ID | Desc | Status | Verify by |
+|----|------|--------|-----------|
+| R4 | Distill browser-use/jev-ultrafast (+ jev-ultrafast-mcp replay) | done 2026-10-17 | .agent/reports/R4.md |
+| B1 | Global skill ~/.claude/skills/jev-browser: SKILL.md + Node scripts (DOM element table, JEV choice loop, code assertions, record → .browser-scenarios/*.json, zero-model replay, Playwright spec export) | done 2026-10-17 (15/15 unit; live goal 5 JEV calls; controller replay pass, 0 calls, also w/o key) | fixture page: record w/ JEV, replay 2x with 0 JEV calls, same result |
+| B2 | SPEC: §7.5 browser smoke scenarios + task T21 + graph/table/file tree/DoD + CLAUDE.md row | done 2026-10-17 (SPEC v1.3 §7.5 S01–S06, T21 W9, graph/table/tree/DoD/matrix, CLAUDE.md; reconcile format w/ B1 in B3) | grep, graph matches 8.2 |
+| B3 | Review B1+B2 (reviewer) + commit | todo | review report, git log |

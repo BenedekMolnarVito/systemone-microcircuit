@@ -10,6 +10,7 @@ Browser demo: JEV primitives (Score → Noul → Choice) as neurons in a toy cor
 - Dependencies: the **Task dependency graph** at the top of `docs/SPEC.md`. Start a task only when every task it depends on is `done`.
 - Spec contradicts itself or your brief → stop, report `BLOCKED` (§8.1). Don't improvise.
 - Locate sections by heading, not line number: `grep -n "^### 2.4" docs/SPEC.md`, then Read with offset.
+- Any browser use (UI checks, smoke tests, debugging the page) → `jev-browser` skill: `replay` an existing `browser-scenarios/*.json` first (zero model calls); record new flows only with code-checked assertions. No screenshot-driven browsing.
 - Always relevant: §0.3 Glossary, §7.4 traceability matrix (rows for your FR IDs), §10 "Determinism requirements".
 
 ## Commands
@@ -52,6 +53,7 @@ Each wave's tasks have disjoint files and can run in parallel.
 | W8 | T18 | README guide (verify every command) | §9 |
 | W8 | T19 | Cloudflare Worker template (MAY) | §5.7 |
 | W9 | T17 | Real JEV recording (optional, needs key) | §3.6 (FR-REC-07) |
+| W9 | T21 | Browser smoke scenarios S01–S06 (record via `jev-browser`, replay via skill + `tests/e2e/smoke.spec.mjs`) | §4.2, §7.1, §7.5, FR-TST-09 |
 | W9 | T20 | Final review + Definition of Done | §8.5 |
 
-Milestones: M1 after W6 (headless core + JEV + proxy tested), M2 after W7 (app runs), M3 after W8 (E2E + README), M4 after W9 (REPLAY on Pages).
+Milestones: M1 after W6 (headless core + JEV + proxy tested), M2 after W7 (app runs), M3 after W8 (E2E + README), M4 after W9 (smoke scenarios green; REPLAY on Pages).
