@@ -1,0 +1,12 @@
+#app-header h1 { white-space: nowrap; }
+#app-header [data-testid="pitch"] { color: var(--text-muted); font-size: 12px; flex: 1 1 240px; min-width: 0; }
+[data-testid="mode-badge"] { padding: 2px 8px; border: 1px solid var(--accent); border-radius: 10px; font-family: var(--mono); font-size: 12px; }
+.mode-select { display: inline-flex; gap: 2px; }
+#app-header input[type="text"] { width: 9ch; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 4px; }
+#app-header output { font-family: var(--mono); font-size: 12px; }
+#banner { display: flex; align-items: center; gap: 8px; background: var(--surface-2); }
+#banner[data-level="warn"] { border-left: 4px solid var(--warn); }
+#banner[data-level="error"] { border-left: 4px solid var(--error); }
+#banner[data-level="info"] { border-left: 4px solid var(--accent); }
+#banner [data-testid="banner-text"] { flex: 1; }
+#file-protocol-notice { padding: 8px 12px; background: var(--warn); color: var(--bg); }
