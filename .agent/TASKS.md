@@ -21,3 +21,29 @@ Source: "I had an idea in my dreams. What if JEV (Typesafe)(1).md" (Perplexity c
 | B1 | Global skill ~/.claude/skills/jev-browser: SKILL.md + Node scripts (DOM element table, JEV choice loop, code assertions, record → .browser-scenarios/*.json, zero-model replay, Playwright spec export) | done 2026-10-17 (15/15 unit; live goal 5 JEV calls; controller replay pass, 0 calls, also w/o key) | fixture page: record w/ JEV, replay 2x with 0 JEV calls, same result |
 | B2 | SPEC: §7.5 browser smoke scenarios + task T21 + graph/table/file tree/DoD + CLAUDE.md row | done 2026-10-17 (SPEC v1.3 §7.5 S01–S06, T21 W9, graph/table/tree/DoD/matrix, CLAUDE.md; reconcile format w/ B1 in B3) | grep, graph matches 8.2 |
 | B3 | Review B1+B2 (reviewer) + commit | done 2026-10-18 (PASS-WITH-FIXES 1C/5I skill + 4 spec; B4 fixed skill 19/19 tests, replay pass 0 calls; spec S1-S4 + S01 wait_for fixed by controller) | review report, git log |
+
+## Phase 3 — Implement SPEC end-to-end (2026-10-18)
+Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; NO git, NO TASKS/PROGRESS edits. Controller verifies, commits per task, updates state. Common brief: `.agent/briefs/impl-common.md`.
+| ID | Wave | Desc | Status | Verify by |
+|----|------|------|--------|-----------|
+| T01 | W1 | scaffold + core utils | todo | U-01–04, U-40, U-50, U-51 green |
+| T02 | W2 | stimuli + encoding | todo | U-08, U-19, U-20, U-62 |
+| T06 | W2 | JEV schema/summary/emulator | todo | U-24–29, U-26b, U-42, U-43 |
+| T10 | W2 | UI shell | todo | node --check |
+| T03 | W3 | network builder | todo | U-17, U-18 |
+| T07 | W3 | replay + placeholder recording | todo | U-39, U-39b, U-39c |
+| T12 | W3 | charts/dashboard/log | todo | node --check |
+| T13 | W3 | input + params panels | todo | node --check |
+| T04 | W4 | sim core | todo | U-05–16, 21, 22, 30–36, 60, 61 |
+| T11 | W4 | circuit view | todo | node --check |
+| T05 | W5 | readout + calibration | todo | U-59, calibration table |
+| T08 | W5 | keystore/client/scheduler | todo | U-23, 37, 38, 41, 44–49, 52–56, 58 |
+| T09 | W6 | proxy | todo | P-01–P-22 |
+| T14 | W6 | key modal + About | todo | U-57 |
+| T15 | W7 | main wiring + __mc | todo | node --check + mock-upstream smoke |
+| T16 | W8 | E2E + screenshots + EVIDENCE | todo | playwright E01–E34 |
+| T18 | W8 | README | todo | commands run |
+| T19 | W8 | CF worker (MAY) | todo | node --check + warning verbatim |
+| T17 | W9 | real recording (optional) | todo | needs key → likely deferred |
+| T21 | W9 | smoke scenarios S01–S06 | todo | skill replay 0 calls + smoke.spec |
+| T20 | W9 | final review + DoD | todo | DoD checklist §8.5 |

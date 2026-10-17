@@ -1,9 +1,12 @@
-# PROGRESS — Phase 2 COMPLETE (2026-10-18)
-Phase 1: SPEC v1.2, README, CLAUDE.md index, dep graph. Phase 2: jev-browser skill + SPEC v1.3 smoke scenarios (§7.5, T21).
-## State
-- Skill ~/.claude/skills/jev-browser (user-scoped, no VCS by choice). 19/19 unit tests; live goal 5 JEV calls; replay pass 0 calls (verified by controller, also w/o key).
-- Reviews: B3 (reports/B3.md) fixed by B4 (reports/B4.md) + controller spec edits.
-- Not pushed (auto mode blocks push; user runs `! git push origin main`).
-## Decisions (user, 2026-10-18)
-- Skill stays user-scoped at ~/.claude/skills/jev-browser, no version control.
-- Perplexity source md deleted intentionally (user keeps it elsewhere).
+# PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
+Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
+## Now
+- W1: T01 dispatched (implementer).
+## Next
+- W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
+## Protocol
+- Children: owned files only + reports/<id>.md, no git. Controller: run unit tests, commit per task by path, update TASKS/PROGRESS.
+## Blockers
+- none
+## Decisions
+- No worktrees: file sets disjoint per wave, controller sole committer.
