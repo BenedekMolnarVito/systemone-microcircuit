@@ -31,7 +31,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T06 | W2 | JEV schema/summary/emulator | done (45/53 pass 0 fail; controller fixed collateral shape) | U-24–29, U-26b, U-42, U-43 |
 | T10 | W2 | UI shell | done (node --check 6 files OK) | node --check |
 | T03 | W3 | network builder | done (network tests green) | U-17, U-18 |
-| T07 | W3 | replay + placeholder recording | in-progress 2026-10-18 | U-39, U-39b, U-39c |
+| T07 | W3 | replay + placeholder recording | done (49/56 pass, 0 fail) | U-39, U-39b, U-39c |
 | T12 | W3 | charts/dashboard/log | done (node --check; gaps in scratch) | node --check |
 | T13 | W3 | input + params panels | done (node --check) | node --check |
 | T04 | W4 | sim core | in-progress 2026-10-18 | U-05–16, 21, 22, 30–36, 60, 61 |

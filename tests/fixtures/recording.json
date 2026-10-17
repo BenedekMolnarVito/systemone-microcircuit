@@ -1,0 +1,93 @@
+{
+ "format": "jev-recording",
+ "version": 1,
+ "recordedAt": "2026-10-17T12:00:00Z",
+ "model": "jev-test",
+ "app": {
+  "name": "systemone-microcircuit",
+  "commit": null
+ },
+ "seed": 42,
+ "params": null,
+ "stimulusSequence": null,
+ "usageTotal": null,
+ "entries": [
+  {
+   "i": 0,
+   "simTimeMs": 500,
+   "requestHash": "6c5f728b",
+   "matchKey": {
+    "kind": "circuit_summary",
+    "stimulus": "vbar",
+    "questionKeys": [
+     "circuit_evidence",
+     "circuit_novelty",
+     "circuit_orientation"
+    ],
+    "features": [
+     0.8333333333333334,
+     0.08333333333333333,
+     0.041666666666666664,
+     0.041666666666666664,
+     0.8
+    ]
+   },
+   "questions": {
+    "circuit_orientation": "choice",
+    "circuit_novelty": "noul",
+    "circuit_evidence": "score"
+   },
+   "stateDigest": {
+    "kind": "circuit_summary",
+    "simTimeMs": 500,
+    "stimulus": "vbar"
+   },
+   "response": {
+    "model": "jev-sim",
+    "answers": {
+     "circuit_orientation": {
+      "type": "choice",
+      "choice": "vertical",
+      "confidence": 0.92,
+      "probabilities": {
+       "vertical": 0.97,
+       "horizontal": 0,
+       "diag45": 0.03,
+       "diag135": 0,
+       "none": 0
+      }
+     },
+     "circuit_novelty": {
+      "type": "noul",
+      "noul": 1
+     },
+     "circuit_evidence": {
+      "type": "score",
+      "score": 3.2,
+      "confidence": 0.69,
+      "legend": {
+       "0": "No evidence",
+       "1": "Weak",
+       "2": "Moderate",
+       "3": "Strong",
+       "4": "Unambiguous"
+      },
+      "probabilities": {
+       "0": 0,
+       "1": 0,
+       "2": 0,
+       "3": 0.8,
+       "4": 0.2
+      }
+     }
+    },
+    "usage": {
+     "input_tokens": 327,
+     "output_tokens": 60
+    }
+   },
+   "latencyMs": 281,
+   "recordedAtMs": 1760702400000
+  }
+ ]
+}
