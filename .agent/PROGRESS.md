@@ -11,3 +11,4 @@ Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "P
 ## Decisions
 - No worktrees: file sets disjoint per wave, controller sole committer.
 - U-60/E14 + τ_m=1 (guard unreachable otherwise; T04 evidence).
+- T05 may edit network.js weights (calibration; T03 done, no conflict).
