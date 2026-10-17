@@ -1,7 +1,7 @@
 # SystemOne Microcircuit — Specification
 
-**Version:** 1.1 (fix wave S2, 2026-10-17)
-**Changelog:** v1.1 — applied review findings V1-sec, V1-impl, V1-sci: Noul redefined as the probability of ≥ 1 spike within a 10 ms window (the old fixed-rate constant removed; per-step hazard `p_step = 1 − (1 − Noul)^(dt/W)`); scaling numbers corrected and disanalogies disclosed; API-base URL parameter removed, key flow and storage restricted to the same-origin proxy, Cloudflare Worker documented as open credit spender; error-code table and retry rules; fixture keys must contain `FAKE`/`SENTINEL`/`REDACTED`; quoted unit-test glob, Node ≥ 22 for dev, committed lockfile; proxy `--mock-upstream`/`--no-api` replace python, env-isolated tests, Playwright trace/video off, `.gitignore`; determinism (named PRNG streams, build/STDP/tick order, sim-time debounce, scheduler module); `window.__mc` test hook and screenshot protocol; isolated-neuron test harness; module homes for helpers; file ownership (T01 owns `index.html` + `base.css`, per-component CSS) and rechecked waves; About content specified with tests (U-57); recording stores only validated answers; T17 automated and optional; owner URL fixed; references [2] and [10] corrected; FR → test traceability matrix (Section 7.4). v1.0 — draft S1.
+**Version:** 1.2 (fix wave S3, 2026-10-17)
+**Changelog:** v1.2 — applied re-review V2: README PowerShell key line no longer matches the U-40 scan, T01 fixes scan hits in `.agent/`/`docs/`, DoD history check limited to added lines since 88ef42b; per-scenario console-error filter (E07/E07b/E21, E18 exempt); E15/E07b loop reaches 2 LIVE calls; retry classified by `error.code` only (U-47, missing code → `malformed`); `createScheduler` takes injected `getLocalLabel`; `spikeHazard` exported for U-07; U-50 checks only existing files; `tests/unit/live-real.test.mjs` owned by T09 (FR-TST-08 exception); T09 depends on T08 and moved to W6 (M1 after W6); T15 verify no longer needs T16; matrix rows for FR-ARCH-02a, FR-REC-01a/01b; duplicate task-table header removed. v1.1 — applied review findings V1-sec, V1-impl, V1-sci: Noul redefined as the probability of ≥ 1 spike within a 10 ms window (the old fixed-rate constant removed; per-step hazard `p_step = 1 − (1 − Noul)^(dt/W)`); scaling numbers corrected and disanalogies disclosed; API-base URL parameter removed, key flow and storage restricted to the same-origin proxy, Cloudflare Worker documented as open credit spender; error-code table and retry rules; fixture keys must contain `FAKE`/`SENTINEL`/`REDACTED`; quoted unit-test glob, Node ≥ 22 for dev, committed lockfile; proxy `--mock-upstream`/`--no-api` replace python, env-isolated tests, Playwright trace/video off, `.gitignore`; determinism (named PRNG streams, build/STDP/tick order, sim-time debounce, scheduler module); `window.__mc` test hook and screenshot protocol; isolated-neuron test harness; module homes for helpers; file ownership (T01 owns `index.html` + `base.css`, per-component CSS) and rechecked waves; About content specified with tests (U-57); recording stores only validated answers; T17 automated and optional; owner URL fixed; references [2] and [10] corrected; FR → test traceability matrix (Section 7.4). v1.0 — draft S1.
 **Owner / idea:** Benedek Molnár
 **Status:** Implementation-ready specification. This document is the single source of truth for the demo. Requirement keywords MUST, MUST NOT, SHOULD, SHOULD NOT and MAY follow RFC 2119.
 
@@ -666,7 +666,7 @@ FR-REC-01 File `docs/data/jev-recording.json`, schema:
 | 504 | `timeout` | upstream > 5000 ms | no | `timeout` |
 | 502 | `upstream_malformed` | upstream 200 non-JSON, or any other upstream status | no | `malformed` |
 
-Client-only codes: `proxy_unreachable` (`fetch` rejects with `TypeError`, for example proxy stopped), `timeout` (client abort at 6000 ms), `malformed` (FR-JEV-24 validation failure), `budget_exhausted` (client cap), `aborted`.
+Client-only codes: `proxy_unreachable` (`fetch` rejects with `TypeError`, for example proxy stopped), `timeout` (client abort at 6000 ms), `malformed` (FR-JEV-24 validation failure), `budget_exhausted` (client cap), `aborted`. A non-200 response without a parseable `error.code` → client code `malformed`, no retry.
 
 | Client code | UI behaviour | Mode change |
 |---|---|---|
@@ -1062,6 +1062,7 @@ export function buildSingleNeuronNetwork(pop: PopId): Network;         // test h
 
 // core/sim.js
 export function createSim(network: Network, params: Params, seed: number, opts?: {test?: boolean}): Sim;
+export function spikeHazard(noul: number, noulExp: number): number; // 1 − (1 − noul)^noulExp, step 5 (U-07)
 // Sim = { step(): StepResult; stepN(k): void; setParams(p): void; setStimulus(img: Float32Array, id: string): void;
 //         setControl({betaOutput?: number, stdpM?: number}): void; reset(seed?: number): void;
 //         readonly t: number; readonly n: number; state: SimState; spikesSince(n0): Int32Array /*pairs n,i*/;
@@ -1078,7 +1079,8 @@ export function localReadout(spikeLog, n: number, network, windowMs = 200): {lab
 export function agree(localLabel: string, jevChoice: string | null): boolean | null;  // FR-RO-03, U-59
 
 // core/scheduler.js  (DOM-free; FR-JEV-08/09/17/18; owned by T08)
-export function createScheduler({sim, network, client, getParams, getStimulusId, bus}): Scheduler;
+export function createScheduler({sim, network, client, getParams, getStimulusId, getLocalLabel, bus}): Scheduler;
+// getLocalLabel() injected (scheduler does not import readout.js); T15 wires it to localReadout; U-23/U-56 pass () => "nothing".
 // Scheduler = { afterStep(n): void;            // called by the loop and by __mc.runSteps after every sim.step()
 //               onStimulusChange(id, tMs): void; reset(): void;   // reset: clears pending ticks, windowMs base
 //               lastTickMs: number }
@@ -1266,8 +1268,8 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 - FR-TST-04 Local serving: only the proxy: `node tools/jev-proxy.mjs` (static + API, port 8787) or `node tools/jev-proxy.mjs --no-api` (static only). No python.
 - FR-TST-05 Real JEV smoke test (`tests/e2e/live-real.spec.mjs` and `tests/unit/live-real.test.mjs`) and the T17 recording spec run only when `JEV_LIVE_TEST=1` and `TYPESAFE_API_KEY` are set; skipped otherwise; never in CI by default. Max 2 billed calls for the smoke test. Only in this case is the env key passed through (a separate webServer on port 8791 started by the spec's own `test.beforeAll`, `trace: 'off'`, `video: 'off'`, `screenshot: 'off'`). The key is NEVER typed into the page in any test; only keys containing `FAKE` are typed.
 - FR-TST-06 Evidence file (below Section 7.3).
-- FR-TST-07 `.gitignore` contains at least: `node_modules/`, `test-results/`, `playwright-report/`, `blob-report/`, `*.trace.zip`, `*.har`, `.env`, `.env.*`. Console-error filter used by every "no console errors" assertion (E01 etc.): ignore a message only if `msg.type() === 'error'` and `/^Failed to load resource: the server responded with a status of 404/.test(msg.text())` and `/\/api\/health$/.test(msg.location().url)`. Every other console error fails the test.
-- FR-TST-08 Environment isolation: unit tests never read `process.env` for keys; `createProxy` gets an explicit `env` object (for example `{}` or `{TYPESAFE_API_KEY: "test-key-FAKE-123", TYPESAFE_BASE_URL: "http://127.0.0.1:<fakePort>"}`); tests that spawn the CLI pass `env: {...process.env, TYPESAFE_API_KEY: "", TYPESAFE_BASE_URL: ""}` unless `JEV_LIVE_TEST=1`.
+- FR-TST-07 `.gitignore` contains at least: `node_modules/`, `test-results/`, `playwright-report/`, `blob-report/`, `*.trace.zip`, `*.har`, `.env`, `.env.*`. Console-error filter used by every "no console errors" assertion (E01 etc.): ignore a message only if `msg.type() === 'error'` and `/^Failed to load resource: the server responded with a status of 404/.test(msg.text())` and `/\/api\/health$/.test(msg.location().url)`. Every other console error fails the test. Per-scenario expected network lines are also ignored, matched by `msg.location().url`: E07, E07b → `/api/jev` with status 401; E21 → `net::ERR_FAILED` for `/api/health` and `/data/jev-recording.json`. E18 does not assert console errors (module loading is expected to fail on `file://`).
+- FR-TST-08 Environment isolation: unit tests never read `process.env` for keys; `createProxy` gets an explicit `env` object (for example `{}` or `{TYPESAFE_API_KEY: "test-key-FAKE-123", TYPESAFE_BASE_URL: "http://127.0.0.1:<fakePort>"}`); tests that spawn the CLI pass `env: {...process.env, TYPESAFE_API_KEY: "", TYPESAFE_BASE_URL: ""}` unless `JEV_LIVE_TEST=1`. Exception: `tests/unit/live-real.test.mjs` (T09, FR-TST-05) is the only test allowed to read `process.env`, and only when `JEV_LIVE_TEST=1` and the key are set.
 - FR-TST-09 Test hook (only when the URL has `?test=1`): `window.__mc = {pause(), runSteps(n), setSeed(s), getState()}`. `pause()` stops the rAF loop driving the sim; `runSteps(n)` pauses, then runs exactly `n` sim steps synchronously through the same path as the loop (`sim.step()` then `scheduler.afterStep(n)` per step), renders once and returns `getState()`; `setSeed(s)` = apply seed + reset (as `btn-seed-apply`); `getState()` returns `{t, n, run, mode, frame, spikeCountsByPop, spikeCountsByGroup: {L4E: [4], L23E: [4], L5E: [4]}, readoutLocal, readoutJev, jevLogLength, budget, selection, rasterHash, unrecorded}`, never the key. `?test=1` also forces reduced motion (as `prefers-reduced-motion: reduce`), adds class `test-mode` on `<html>` (`base.css`: `.test-mode *, .test-mode *::before, .test-mode *::after {transition: none !important; animation: none !important}`) and keeps warn/info banners until dismissed. Screenshot protocol: `setSeed(42)` (or the stated seed) → click the stated `stimulus-preset-<id>` → `runSteps(<fixed n>)` → `page.screenshot({animations: 'disabled'})`. No wall-clock waits except waiting for rendering idle (`requestAnimationFrame` twice).
 - `package.json` scripts: `"test:unit": "node --test \"tests/unit/*.test.mjs\""`, `"test:e2e": "playwright test"`, `"serve": "node tools/jev-proxy.mjs"`.
 
@@ -1281,7 +1283,7 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 | U-04 | params.test | `clampParams({tauM: 0})` → 1; `{tauC: 0}` → 0.05; `{theta: 99}` → 40; unknown keys dropped |
 | U-05 | sim.test | Leak: harness `createSim(buildSingleNeuronNetwork('L23PV'), {...DEFAULTS, sigmaV: 0}, 1, {test: true})`, `debug.setState(0, {S: 10})`, no input → after 20 steps (10 ms) S = 10·e⁻¹ ± 1e-4 |
 | U-06 | sim.test | Noul: S = θ → 0.5; S = θ + 10Δ → > 0.9999; S = θ − 10Δ → < 1e-4; Δ = 0.5 with S = 40 → finite 1 |
-| U-07 | sim.test | Spike hazard: harness neuron, `debug.forceNoul(0, 0.5)`, dt = 0.5 ms, W = 10 ms → `p_step = 1 − 0.5^(0.05) = 0.0340636710751544` (exact formula check ± 1e-12); empirical spike probability over 10⁵ steps with refractoriness cleared (`debug.setState(0, {ref: 0})` before each step) = 0.03406 ± 0.0025 (≈ 4 SD); `forceNoul(0, 1)` → `p_step = 1` (spike on every step where `ref = 0`); `forceNoul(0, 0)` → no spikes |
+| U-07 | sim.test | Spike hazard: harness neuron, `debug.forceNoul(0, 0.5)`, dt = 0.5 ms, W = 10 ms → `p_step = 1 − 0.5^(0.05)`; exact formula check `spikeHazard(0.5, 0.05)` = 0.0340636710751544 ± 1e-12; empirical spike probability over 10⁵ steps with refractoriness cleared (`debug.setState(0, {ref: 0})` before each step) = 0.03406 ± 0.0025 (≈ 4 SD); `forceNoul(0, 1)` → `p_step = 1` (spike on every step where `ref = 0`); `forceNoul(0, 0)` → no spikes |
 | U-08 | stimuli.test | `rasterize` of a 192×192 all-white RGBA → 256 ones; of half-black → 128 ones ± 0; output length 256 |
 | U-09 | sim.test | Refractory: harness neuron, after spike `S = 0` and no spike for exactly 4 steps even with `debug.forceNoul(0, 1)` and `debug.inject(0, 0, 30)` every step |
 | U-10 | sim.test | Reset: after spike S = V_reset |
@@ -1317,17 +1319,17 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 | U-39 | replay.test | `buildRecordingEntry` and `serializeLogEntry` outputs never contain the key or the strings `Authorization`, `X-JEV-Key`, `Bearer` |
 | U-39b | replay.test | `validateRecording` rejects wrong `format`, missing `entries`, entry without `response.answers` |
 | U-39c | replay.test | Exact hash match → `exact`; perturbed features (L1 0.1) → `nearest`; L1 0.5 → `null` |
-| U-40 | secrets.test | Scans every file from `git ls-files` plus `git ls-files --others --exclude-standard` plus `docs/data/*.json` for `/sk-[A-Za-z0-9_-]{16,}/`, `/Bearer\s+[A-Za-z0-9._-]{20,}/`, `/TYPESAFE_API_KEY\s*[=:]\s*["']?[A-Za-z0-9._-]{8,}/`. A match is allowed only if the matched text contains `FAKE`, `SENTINEL` or `REDACTED` (allowlist by content; no path-based excludes). Every fixture or example key in specs, tests and docs MUST contain `FAKE` (for example `sk-FAKE-0000000000000000`, `test-key-FAKE-123`). Unconditionally: if env `TYPESAFE_API_KEY` is set (length ≥ 8), its exact value appears in no scanned file |
+| U-40 | secrets.test | Scans every file from `git ls-files` plus `git ls-files --others --exclude-standard` plus `docs/data/*.json` for `/sk-[A-Za-z0-9_-]{16,}/`, `/Bearer\s+[A-Za-z0-9._-]{20,}/`, `/TYPESAFE_API_KEY\s*[=:]\s*["']?[A-Za-z0-9._-]{8,}/`. A match is allowed only if the matched text contains `FAKE`, `SENTINEL` or `REDACTED` (allowlist by content; no path-based excludes). Every fixture or example key in specs, tests and docs MUST contain `FAKE` (for example `sk-FAKE-0000000000000000`, `test-key-FAKE-123`). Unconditionally: if env `TYPESAFE_API_KEY` is set (length ≥ 8), its exact value appears in no scanned file. T01 runs the scan over the current tree before committing and fixes any hit in `.agent/` or `docs/` by editing the literal to contain `FAKE` |
 | U-41 | keystore.test | Storage whose methods throw → `set` returns ok with `memoryOnly: true`; `get` returns the key; no exception |
 | U-42 | schema.test | Response with `noul: 7` → clamped 1; `noul: "0.5"` → invalid; `choice: "admin"` not in criteria → invalid; probabilities sum 0 → invalid; missing question key → invalid; extra key dropped |
 | U-43 | schema.test | Legend string of 10 000 chars → truncated to 200; contains `<script>` → preserved as text (no transformation), flagged for `textContent` use |
 | U-44 | client.test | Budget cap 2: third LIVE `ask` returns `budget_exhausted` without calling `fetchImpl`; mode becomes SIMULATED |
 | U-45 | client.test | `health()` with fetch returning HTML 200, 404, JSON missing `keySource`, or rejecting → `null` |
 | U-46 | client.test | Fake fetch never resolves → abort at 6000 ms (fake timers) → `timeout`; 3 consecutive → mode SIMULATED |
-| U-47 | client.test | 429, 429, 200 sequence → success after 2 retries; delays 1000/2000 ms; `Retry-After: 5` → 5000 ms; budget used = 3 |
+| U-47 | client.test | Fake fetch returns 429 `{"error":{"code":"upstream_rate_limited","message":"x"}}` twice, then 200 → success after 2 retries; same with `{"error":{"code":"rate_limited","message":"x"}}` → no retry, tick fallback; delays 1000/2000 ms; `Retry-After: 5` → 5000 ms; budget used = 3 |
 | U-48 | client.test | `abortAll` during flight → result `aborted`; late resolution with old `runId` not emitted as `jev:response` |
 | U-49 | client.test | `setMode('SIMULATED')` during LIVE flight → aborted; next `ask` answered by emulator synchronously |
-| U-50 | dom-free.test | Static check: no `innerHTML`, `outerHTML`, `insertAdjacentHTML` or `document.write` with non-literal arguments in `docs/js/**` (regex scan; literal-only template strings allowed). Also: every file of the Section 5.1 tree under `docs/` and `tools/` exists (FR-ARCH-01; this tree-completeness case is `test.skip` until T20 enables it); every module in `docs/js/core/`, `docs/js/jev/` and `docs/js/ui/about-content.js` imports in Node without a DOM (FR-ARCH-02) and exports the Section 5.2 names (FR-ARCH-06); no bare-specifier imports in `docs/js/**` (FR-ARCH-03); `index.html` references no `http:`/`https:` script, style or font (FR-ARCH-04) |
+| U-50 | dom-free.test | Static check: no `innerHTML`, `outerHTML`, `insertAdjacentHTML` or `document.write` with non-literal arguments in `docs/js/**` (regex scan; literal-only template strings allowed). Also: every file of the Section 5.1 tree under `docs/` and `tools/` exists (FR-ARCH-01; this tree-completeness case is `test.skip` until T20 enables it); every module in `docs/js/core/`, `docs/js/jev/` and `docs/js/ui/about-content.js` imports in Node without a DOM (FR-ARCH-02) and exports the Section 5.2 names (FR-ARCH-06); no bare-specifier imports in `docs/js/**` (FR-ARCH-03); `index.html` references no `http:`/`https:` script, style or font (FR-ARCH-04). Import/export checks iterate only files that exist; missing files are caught solely by the tree-completeness case (skipped until T20) |
 | U-51 | loop.test | `computeSteps(acc, wallDelta=250, speed=1000)` clamps delta to 100 → 200 steps; cap 400 respected |
 | U-52 | client.test | LIVE mode with `keySource: "env"` or `"mock"` never sets `X-JEV-Key`; with `"none"` sets it to the stored key; request URL is exactly `api/jev` |
 | U-53 | client.test | With `location` stubbed to `https://benedekmolnarvito.github.io/systemone-microcircuit/` plus a query parameter `api` = `https://evil.example`, the client still requests only same-origin `api/jev`; a helper call with a cross-origin URL never attaches `X-JEV-Key`; `createJevClient` has no API-base option |
@@ -1370,7 +1372,7 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 
 ### 7.3 E2E scenarios (`tests/e2e/*.spec.mjs`)
 
-All use `?test=1&autoplay=0&seed=42` unless stated and follow the screenshot protocol of FR-TST-09 (`window.__mc.setSeed` → click preset → `__mc.runSteps(n)` → screenshot). `__mc.getState()` never contains the key (asserted in E05). Static scenarios run against the `--no-api` server (port 8080), LIVE scenarios against the `--mock-upstream` server (port 8790). Every scenario asserts zero console errors using the FR-TST-07 filter.
+All use `?test=1&autoplay=0&seed=42` unless stated and follow the screenshot protocol of FR-TST-09 (`window.__mc.setSeed` → click preset → `__mc.runSteps(n)` → screenshot). `__mc.getState()` never contains the key (asserted in E05). Static scenarios run against the `--no-api` server (port 8080), LIVE scenarios against the `--mock-upstream` server (port 8790). Every scenario except E18 asserts zero console errors using the FR-TST-07 filter.
 
 | ID | Steps | Assertions | Screenshot |
 |---|---|---|---|
@@ -1382,7 +1384,7 @@ All use `?test=1&autoplay=0&seed=42` unless stated and follow the screenshot pro
 | E05 | Mock server (health OK, `keySource: "mock"` is overridden by `page.route('**/api/health')` → valid body with `keySource: "none"`); open key modal, type `test-key-FAKE-789`, save | `key-masked` = `•••• -789`; `getState()` JSON, `document.body.innerText`, URL and `localStorage` do not contain the full key; sessionStorage does | `E05-key-modal.png` |
 | E06 | Mock server; open `http://127.0.0.1:8790/?test=1&autoplay=0&seed=42`; select LIVE (no key, no `no_key` error, `keySource: "mock"`); Ask JEV | badge `LIVE JEV`; log entry status `ok`, model `jev-mock`; budget `1 / 50`; `compare-score`, `compare-noul`, `compare-choice` show both Local and JEV values (FR-JEV-16) | `E06-live-mocked.png` |
 | E07 | Mock server; Playwright route `**/api/health` → valid body with `keySource:"none"`, `**/api/jev` → 401 `{"error":{"code":"unauthorized","message":"Invalid API key"}}`; paste `test-key-FAKE-401`; LIVE; Ask JEV | error banner contains "401"; badge returns to `SIMULATED JEV`; key modal open | `E07-error-401.png` |
-| E07b | As E07 but first 2 calls 200, then 401 during auto ticks | sim keeps running; banner; mode SIMULATED | — |
+| E07b | As E07 but auto JEV on, `param-liveMinIntervalMs` 1000, same loop as E15 (`runSteps(1000)`, wait for new `jev-log-entry` max 5 s, wait 1100 ms wall): 2 iterations answered 200, third answered 401 via `page.route` | sim keeps running; banner; mode SIMULATED | — |
 | E08 | Static server (`--no-api`) | `mode-select-live` disabled with `title` containing `node tools/jev-proxy.mjs`; no request to any origin other than the page's (network log); zero console errors with the FR-TST-07 filter | `E08-no-key-simulated.png` |
 | E09 | Mobile project 375×812 | `document.documentElement.scrollWidth <= 375`; all header buttons visible after scrolling | `E09-mobile-375.png` |
 | E10 | `colorScheme: 'dark'` | `--bg` computed `#0b0f17`; text contrast ≥ 4.5 for 5 sampled elements | `E10-dark.png` |
@@ -1390,7 +1392,7 @@ All use `?test=1&autoplay=0&seed=42` unless stated and follow the screenshot pro
 | E12 | `page.route('**/data/jev-recording.json')` fulfils with `tests/fixtures/recording.json`; reload; select REPLAY; click `vbar`, `runSteps(4000)` | badge `REPLAY JEV`; log entries `exact` or `nearest` | `E12-replay.png` |
 | E13 | Open About | sections `about-pitch`, `about-mapping`, `about-established`, `about-proposal`, `about-simplification`, `about-refs` visible and non-empty; FR-SCI-01 sentence, statement 1.5 and FR-SCI-09 text present | `E13-about.png` |
 | E14 | Set θ = 5, g = 0, σ_V = 10, `runSteps(6000)` | `runaway-warning` visible | `E14-runaway.png` |
-| E15 | Mocked LIVE, set budget 2, auto JEV on, `runSteps(1000)` then wait for in-flight calls (`liveMinIntervalMs` is wall time; test waits on log length, max 10 s) | after 2 calls: banner budget, badge SIMULATED, `mode-select-live` disabled while `used ≥ cap` | `E15-budget.png` |
+| E15 | Mocked LIVE, set `param-budget` 2, `param-liveMinIntervalMs` 1000, auto JEV on; loop up to 3×: `runSteps(1000)`, wait until a new `jev-log-entry` with status `ok` appears (max 5 s), wait 1100 ms wall | after 2 calls: banner budget, badge SIMULATED, `mode-select-live` disabled while `used ≥ cap` | `E15-budget.png` |
 | E16 | `reducedMotion: 'reduce'` | no element with class `particle` exists during run; node fills still change | `E16-reduced-motion.png` |
 | E34 | WITHOUT `?test=1` (normal motion), `?autoplay=1&seed=42`, speed 1000, `vbar`, 3 s wall; sample every 100 ms | number of `.particle` elements never exceeds 300 (FR-UI-12) | — |
 | E17 | Draw a vertical stroke on `draw-canvas`, click `btn-draw-use`, `runSteps(4000)` | `stimulus-preview` matches; `readout-local` = vertical | `E17-draw.png` |
@@ -1467,6 +1469,7 @@ Every requirement has at least one test. "DoD" = checked in the Definition of Do
 | FR-JEV-23 | U-54, E07 |
 | FR-JEV-24 | U-42, U-43 |
 | FR-REC-01, FR-REC-02 | U-39b, U-40, P-16 |
+| FR-REC-01a, FR-REC-01b | P-16, U-39b |
 | FR-REC-03, FR-REC-04, FR-REC-05 | U-39c, E12 |
 | FR-REC-06 | P-16, E33 |
 | FR-REC-07 | `record.spec` (T17, optional), U-40 |
@@ -1498,6 +1501,7 @@ Every requirement has at least one test. "DoD" = checked in the Definition of Do
 | NFR-PERF-05 | E22 |
 | NFR-PERF-06 | U-30 |
 | FR-ARCH-01 … 04, FR-ARCH-06 | U-50 |
+| FR-ARCH-02a | DoD (`npm ci` + Playwright run), T01 verify |
 | FR-ARCH-05 | E32, P-18 |
 | NFR-SEC-06 (response strings via `textContent` only, Section 3.8) | U-43, U-50, E26 |
 | FR-ARCH-07, FR-ARCH-08 | E05, U-48 |
@@ -1536,8 +1540,6 @@ Every requirement has at least one test. "DoD" = checked in the Definition of Do
 
 ### 8.2 Task table
 
-| ID | Description | Files touched | Depends on | Verify by |
-|---|---|---|---|---|
 Unit verify command for every task: `node --test "tests/unit/*.test.mjs"` (quoted glob). Each file below has exactly one owner; the only sequential hand-overs are noted in the "Files touched" column.
 
 | ID | Description | Files touched (owned) | Depends on | Verify by |
@@ -1550,13 +1552,13 @@ Unit verify command for every task: `node --test "tests/unit/*.test.mjs"` (quote
 | T06 | JEV schema, summary, emulator | `docs/js/jev/{schema,summary,emulator}.js`, `tests/unit/{schema,emulator}.test.mjs`, `tests/fixtures/emulator-golden.json` | T01 (summary tested against a stub of the Section 5.2 Sim interface) | U-24–U-29, U-26b, U-42, U-43 |
 | T07 | Replay + placeholder recording | `docs/js/jev/replay.js`, `tests/unit/replay.test.mjs`, `tests/fixtures/recording.json`, `docs/data/jev-recording.json` (placeholder, FR-JEV-06) | T06 | U-39, U-39b, U-39c |
 | T08 | Keystore + client + scheduler | `docs/js/jev/{keystore,client}.js`, `docs/js/core/scheduler.js`, `tests/unit/{keystore,client,scheduler}.test.mjs` | T04, T06, T07 | U-23, U-37, U-38, U-41, U-44–U-49, U-52–U-56, U-58 |
-| T09 | Proxy | `tools/jev-proxy.mjs`, `tests/unit/proxy.test.mjs` | T06, T07 | P-01–P-22 |
+| T09 | Proxy | `tools/jev-proxy.mjs`, `tests/unit/proxy.test.mjs`, `tests/unit/live-real.test.mjs` (skipped unless `JEV_LIVE_TEST=1` and key set; max 1 billed call via `createProxy({env: process.env})` — only test allowed to read `process.env`, FR-TST-08 exception) | T06, T07, T08 | P-01–P-22 |
 | T10 | UI shell JS: header, banner, theme, store, bus, boot | `docs/js/boot.js`, `docs/js/ui/{store,bus,header,banner,theme}.js`, `docs/css/header.css` | T01 | `node --check` on each file; visual check via E01/E09–E11 after T15 |
 | T11 | Circuit view (SVG) | `docs/js/ui/circuit-view.js`, `docs/css/circuit.css` | T03, T10 | `node --check`; E01, E03, E16, E34 after T15 |
 | T12 | Charts + dashboard + JEV log | `docs/js/ui/{charts,dashboard,jev-log}.js`, `docs/css/dashboard.css` | T10 | `node --check`; E02–E04, E06 after T15 |
 | T13 | Input panel + params panel | `docs/js/ui/{input-panel,params-panel}.js`, `docs/css/panels.css` | T02, T10 | `node --check`; E02, E17, E33 after T15 |
 | T14 | Key modal + About drawer + About content | `docs/js/ui/{key-modal,about,about-content}.js`, `docs/css/dialogs.css`, `tests/unit/about.test.mjs` | T08, T10 | U-57; E05, E13, E31 after T15 |
-| T15 | Main wiring, rAF loop, keyboard, URL params, `window.__mc` test hook | `docs/js/main.js`, `docs/js/ui/keyboard.js` | T04–T14 | full app runs in all three modes (LIVE via `--mock-upstream`); E01 green |
+| T15 | Main wiring, rAF loop, keyboard, URL params, `window.__mc` test hook | `docs/js/main.js`, `docs/js/ui/keyboard.js` | T04–T14 | `node --check` on both files; manual smoke: `node tools/jev-proxy.mjs --mock-upstream` → app runs in SIMULATED and LIVE without console errors; E01 green after T16 |
 | T16 | E2E suite, screenshots, EVIDENCE | `tests/e2e/*.spec.mjs` (except `record.spec.mjs`), `playwright.config.mjs`, `tests/screenshots/*`, `tests/EVIDENCE.md` | T09, T15 | `npm ci && npx playwright install chromium && npx playwright test`: E01–E34 green (E19 soft) |
 | T17 | Record real JEV session (automated, FR-REC-07; OPTIONAL) | `tests/e2e/record.spec.mjs`, `docs/data/jev-recording.json` (replaces T07 placeholder) | T09, T15, T16 | needs `JEV_LIVE_TEST=1` + key; then U-40 and E12 green with the real file. Without a key: mark `deferred` in TASKS.md; non-blocking |
 | T18 | README guide (Section 9) | `README.md` | T15 | every command in it run once (unit tests, `--no-api` server, proxy `--help`) |
@@ -1570,18 +1572,18 @@ Unit verify command for every task: `node --test "tests/unit/*.test.mjs"` (quote
 | W1 | T01 |
 | W2 | T02, T06, T10 |
 | W3 | T03, T07, T12, T13 |
-| W4 | T04, T09, T11 |
+| W4 | T04, T11 |
 | W5 | T05, T08 |
-| W6 | T14 |
+| W6 | T09, T14 |
 | W7 | T15 |
 | W8 | T16, T18, T19 |
 | W9 | T17 (optional), then T20 |
 
-Rechecked after v1.1: no file appears in two tasks of the same wave. Sequential hand-overs only: `docs/js/core/params.js` (T01 → T05), `docs/data/jev-recording.json` (T07 → T17), `tests/unit/dom-free.test.mjs` (T01 → T20). `summary.js` (T06) needs `sim.js` interfaces from Section 5.2 only; it is tested against a stub until T04 lands.
+Rechecked after v1.2 (T09 moved to W6): no file appears in two tasks of the same wave. Sequential hand-overs only: `docs/js/core/params.js` (T01 → T05), `docs/data/jev-recording.json` (T07 → T17), `tests/unit/dom-free.test.mjs` (T01 → T20). `summary.js` (T06) needs `sim.js` interfaces from Section 5.2 only; it is tested against a stub until T04 lands.
 
 ### 8.4 Milestones
 
-- M1 (after W5): sim core + JEV layer + scheduler + proxy fully unit-tested headless.
+- M1 (after W6): sim core + JEV layer + scheduler + proxy fully unit-tested headless.
 - M2 (after W7): complete app usable in SIMULATED and mocked LIVE modes.
 - M3 (after W8): E2E green, screenshots and evidence committed, README written.
 - M4 (after W9, optional): real recording shipped, REPLAY live on GitHub Pages.
@@ -1592,7 +1594,7 @@ Rechecked after v1.1: no file appears in two tasks of the same wave. Sequential 
 - [ ] `npm ci && npx playwright install chromium && npx playwright test` green (E19 may be soft-failed on CI hardware), run with `TYPESAFE_API_KEY` set in the shell to prove isolation (FR-TST-08).
 - [ ] Every screenshot listed in Section 7.3 exists in `tests/screenshots/` and is described in `tests/EVIDENCE.md`.
 - [ ] Calibration table (Section 2.11) passes; Appendix A updated if weights changed.
-- [ ] U-40 secret scan green, including with `TYPESAFE_API_KEY` set in the environment; `git log -p --all | grep -E <U-40 patterns>` shows only matches containing `FAKE`, `SENTINEL` or `REDACTED`.
+- [ ] U-40 secret scan green, including with `TYPESAFE_API_KEY` set in the environment; `git log -p 88ef42b..HEAD | grep -E '^\+' | grep -E <U-40 patterns>` (added lines only) shows only matches containing `FAKE`, `SENTINEL` or `REDACTED`. Earlier history contains only the known fake placeholder literals starting `sk-abcdefgh` and `sk-test-abcd` (spec drafts and review reports, since edited to contain `FAKE`) and needs no rewrite.
 - [ ] `.gitignore` matches FR-TST-07; `git status --porcelain` shows no `test-results/`, `playwright-report/` or trace files.
 - [ ] Page works from the GitHub Pages URL (or the `--no-api` server) in SIMULATED (and REPLAY if a recording is shipped) with no console errors other than the filtered `/api/health` 404 line (FR-TST-07).
 - [ ] About drawer content matches Section 1 tags and Section 4.2 About spec (U-57, E13); only Section 11 references cited.
@@ -1659,7 +1661,7 @@ node tools/jev-proxy.mjs
 
 ```powershell
 # Windows PowerShell 7
-$env:TYPESAFE_API_KEY = Read-Host -MaskInput 'JEV key'
+$env:TYPESAFE_API_KEY = (Read-Host -MaskInput 'JEV key')
 node tools/jev-proxy.mjs
 ```
 
