@@ -1,12 +1,28 @@
-# PROGRESS
-Now: S2 fix wave running (brief .agent/briefs/S2.md).
-Next: verify S2 greps → scoped re-review (1 reviewer) → D1 README + commit.
+# PROGRESS — HANDOFF (2026-10-17)
+Goal (/goal): docs/SPEC.md (impl-ready for multi-agent long-horizon session, browser-tested w/ screenshots) for JEV-primitives neuronal-microcircuit demo + README guide. SPEC ONLY, no app code. Spec made via multi-agent workflow, sources verified.
+
+## State
+- Done: R1/R2/R3 research (.agent/reports/), S1 draft SPEC (commit 85441ce), V1 3 reviews (commit 2d9c9f8).
+- IN FLIGHT at cut-off: S2 fix-wave subagent editing docs/SPEC.md per .agent/briefs/S2.md (writes .agent/reports/S2.md when done).
+
+## RESUME STEPS
+1. `git status` / `git diff --stat docs/SPEC.md`. If .agent/reports/S2.md exists → S2 finished. If not and SPEC diff empty/partial → child likely died: re-dispatch S2 (implementer, model opus) with prompt "Task S2. Read .agent/briefs/S2.md first — authoritative…" (edits are idempotent: brief describes target state). Don't run two writers.
+2. Verify S2 yourself:
+   - `grep -nE "τ_N|tauN|\?api=|node --test tests/unit/ " docs/SPEC.md` → empty
+   - `grep -c TODO docs/SPEC.md` → 0
+   - key scan: python snippet scanning repo for env TYPESAFE_API_KEY exact + `(sk|ts|key)[-_]\w{20,}` not containing FAKE/SENTINEL/REDACTED → clean (NOTE: Git Bash grep w/ --exclude-dir got mangled by rtk; use python).
+   - S2.md maps every Critical/Important ID from V1-sec/V1-impl/V1-sci.
+   Commit SPEC v1.1.
+3. Scoped re-review: ONE `reviewer` — check only that V1 Critical/Important are fixed + no new contradictions (point at §2 Noul math, §3 proxy/error codes, §7 tests, §8 task plan file-disjointness). Fix any remaining Critical/Important inline or one more implementer.
+4. D1: write README.md guide (root README currently 1 line "# systemone-microcircuit"). Use SPEC §9 content: pitch, link https://benedekmolnarvito.github.io/systemone-microcircuit/ (NOTE: page doesn't exist until implemented — say "after implementation per docs/SPEC.md"), path A open Pages (simulated/replay), path B presenter live (`TYPESAFE_API_KEY` env + `node tools/jev-proxy.mjs` → http://127.0.0.1:8787), enable Pages from /docs, safety note, link to docs/SPEC.md. Commit.
+5. Mark TASKS done, final report to user: rulings list (below), do NOT push (user's call). Untracked Perplexity source md left uncommitted — ask user whether to commit it.
+
+## Controller rulings (user may overturn)
+- "GEP" = JEV (speech-to-text).
+- JEV API blocks browser CORS (preflight 400 incl. localhost, verified by controller curl) → LIVE mode via bundled zero-dep Node proxy tools/jev-proxy.mjs (same-origin, key from env preferred, X-JEV-Key fallback only to same origin). GitHub Pages = SIMULATED (seeded emulator) default + REPLAY of sanitized real recordings. Optional CF Worker template (presenter-only).
+- Key never committed; key UI only when /api/health OK.
+- SCI-01: Noul := P(≥1 spike in W=10 ms); p_step = 1−(1−Noul)^(dt/W).
+- Unit tests `node --test "tests/unit/*.test.mjs"` (Node≥22; dir arg fails on Node 25, verified).
+- Fixture keys contain FAKE. package-lock committed (dev-only Playwright).
+
 Blockers: none.
-Decisions (controller rulings, user may overturn):
-- "GEP" in request = JEV (speech-to-text).
-- Public repo → key never committed/embedded.
-- JEV blocks browser CORS (preflight 400 for all origins incl localhost) → LIVE via bundled zero-dep local Node proxy tools/jev-proxy.mjs (key from env, same-origin). Pages = SIMULATED default + REPLAY of real recorded JEV responses. Optional CF Worker template.
-- Deliverable = docs/SPEC.md + README guide. No app code.
-- S2 ruling SCI-01: Noul := P(>=1 spike in window W=10 ms); p_step = 1-(1-Noul)^(dt/W); drop tauN; fix U-07, glossary, §1 table, emulator local-Noul consistent.
-- V1-sci: PASS-WITH-FIXES (1C/6I/15M). All 36 DOIs crossref OK.
-- V1-sec: PASS-WITH-FIXES (2C/6I/13M). Rulings: S-01 fixture keys must contain SENTINEL|FAKE|REDACTED, U-40 allowlist only those; also neutralize R3.md:117 placeholder. S-02 drop ?api= param, key only to same-origin. S-03 key modal/storage only enabled after /api/health OK (never on github.io). S-04 tests unset TYPESAFE_API_KEY in proxy/webServer env. S-05 Playwright trace/video off for live tests + .gitignore (test-results, playwright-report, traces). S-06 retry only on upstream 429/529/network, never on proxy-generated codes (use error.code field). S-08 recording stores sanitized validated answers only.
