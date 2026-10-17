@@ -28,12 +28,12 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 |----|------|------|--------|-----------|
 | T01 | W1 | scaffold + core utils | done (34 tests: 20 pass, 14 skip pending modules, 0 fail; controller ran) | U-01–04, U-40, U-50, U-51 green |
 | T02 | W2 | stimuli + encoding | done (stimuli+encoding tests green, controller ran) | U-08, U-19, U-20, U-62 |
-| T06 | W2 | JEV schema/summary/emulator | in-progress 2026-10-18 | U-24–29, U-26b, U-42, U-43 |
+| T06 | W2 | JEV schema/summary/emulator | done (45/53 pass 0 fail; controller fixed collateral shape) | U-24–29, U-26b, U-42, U-43 |
 | T10 | W2 | UI shell | done (node --check 6 files OK) | node --check |
 | T03 | W3 | network builder | done (network tests green) | U-17, U-18 |
-| T07 | W3 | replay + placeholder recording | todo | U-39, U-39b, U-39c |
+| T07 | W3 | replay + placeholder recording | in-progress 2026-10-18 | U-39, U-39b, U-39c |
 | T12 | W3 | charts/dashboard/log | in-progress 2026-10-18 | node --check |
-| T13 | W3 | input + params panels | in-progress 2026-10-18 | node --check |
+| T13 | W3 | input + params panels | done (node --check) | node --check |
 | T04 | W4 | sim core | in-progress 2026-10-18 | U-05–16, 21, 22, 30–36, 60, 61 |
 | T11 | W4 | circuit view | in-progress 2026-10-18 | node --check |
 | T05 | W5 | readout + calibration | todo | U-59, calibration table |
