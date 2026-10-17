@@ -1,0 +1,71 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+h1, h2, p { margin: 0; }
+h1 { font-size: 18px; }
+h2 { font-size: 15px; }
+canvas, svg { display: block; max-width: 100%; }
+canvas { width: 100%; height: auto; }
+button, input, select { font: inherit; color: inherit; }
+button { background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button[aria-pressed="true"] { border-color: var(--accent); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Layout (SPEC 4.1): desktop >= 1200 px */
+#app { display: grid; grid-template-rows: auto auto minmax(0, 1fr); height: 100vh; }
+#app-header { padding: 4px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.header-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 28px; }
+#layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 400px;
+  min-height: 0;
+}
+.col-left, #dashboard { overflow-y: auto; min-height: 0; padding: 8px; }
+#circuit-panel { min-width: 0; padding: 8px; }
+#banner { padding: 6px 12px; border-bottom: 1px solid var(--border); }
+#input-panel label, #params-panel label { display: block; margin: 6px 0; }
+
+/* 768-1199 px */
+@media (max-width: 1199px) {
+  #app { display: block; height: auto; }
+  #layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+    grid-template-areas: "circuit dash" "input dash" "params dash";
+    grid-template-rows: auto auto 1fr;
+  }
+  .col-left { display: contents; }
+  #circuit-panel { grid-area: circuit; }
+  #input-panel { grid-area: input; padding: 8px; }
+  #params-panel { grid-area: params; padding: 8px; }
+  #dashboard { grid-area: dash; overflow-y: visible; }
+}
+
+/* < 768 px: single column, 16 px gutter; order circuit, input, dashboard, params */
+@media (max-width: 767px) {
+  #layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: none; padding: 0 16px; }
+  #circuit-panel, #input-panel, #params-panel, #dashboard { grid-area: auto; padding: 8px 0; }
+  #circuit-panel { order: 1; max-height: 60vh; aspect-ratio: 4 / 3; }
+  #input-panel { order: 2; }
+  #dashboard { order: 3; }
+  #params-panel { order: 4; }
+  #app-header { padding: 4px 16px; }
+}
+
+/* Test mode (FR-TST-09) */
+.test-mode *, .test-mode *::before, .test-mode *::after { transition: none !important; animation: none !important; }

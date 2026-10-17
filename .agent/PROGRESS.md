@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- W1: T01 dispatched (implementer).
+- W1 T01 done (commit). W2: T02, T06, T10 dispatched in parallel.
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol

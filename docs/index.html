@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>SystemOne Microcircuit</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/header.css">
+<link rel="stylesheet" href="css/circuit.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/panels.css">
+<link rel="stylesheet" href="css/dialogs.css">
+<script src="js/boot.js"></script>
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+<div id="file-protocol-notice" data-testid="file-protocol-notice" role="alert" hidden></div>
+
+<div id="app">
+  <header id="app-header">
+    <div class="header-row">
+      <h1 data-testid="app-title">SystemOne Microcircuit</h1>
+      <p data-testid="pitch"></p>
+      <span data-testid="mode-badge" role="status"></span>
+      <div class="mode-select" role="group" aria-label="Mode">
+        <button type="button" data-testid="mode-select-sim" aria-pressed="false">SIM</button>
+        <button type="button" data-testid="mode-select-replay" aria-pressed="false">REPLAY</button>
+        <button type="button" data-testid="mode-select-live" aria-pressed="false">LIVE</button>
+      </div>
+      <button type="button" data-testid="btn-key">Key</button>
+      <button type="button" data-testid="btn-play" aria-pressed="false">Play</button>
+      <button type="button" data-testid="btn-step">Step</button>
+      <button type="button" data-testid="btn-reset">Reset</button>
+    </div>
+    <div class="header-row">
+      <label>Speed
+        <input type="range" data-testid="speed-slider" min="0" max="6" step="1" value="3">
+      </label>
+      <output data-testid="sim-time">t = 0.0 ms</output>
+      <label>Seed
+        <input type="text" data-testid="seed-input" inputmode="numeric" value="42">
+      </label>
+      <button type="button" data-testid="btn-seed-apply">Apply</button>
+      <button type="button" data-testid="btn-seed-random" aria-label="Random seed">Random</button>
+      <output data-testid="jev-budget"></output>
+      <button type="button" data-testid="btn-about">About</button>
+      <button type="button" data-testid="btn-theme">Theme</button>
+    </div>
+  </header>
+
+  <div data-testid="banner" id="banner" role="status" hidden>
+    <span data-testid="banner-text"></span>
+    <button type="button" data-testid="banner-dismiss" aria-label="Dismiss">×</button>
+  </div>
+
+  <main id="layout">
+    <div class="col-left">
+      <section id="input-panel" aria-label="Input">
+        <h2>Input</h2>
+        <div class="preset-grid" id="stimulus-presets"></div>
+        <canvas data-testid="stimulus-preview" width="128" height="128" role="img" aria-label="Stimulus preview"></canvas>
+        <canvas data-testid="draw-canvas" width="192" height="192" role="img" aria-label="Drawing canvas"></canvas>
+        <div class="row">
+          <button type="button" data-testid="brush-draw" aria-pressed="true">Draw</button>
+          <button type="button" data-testid="brush-erase" aria-pressed="false">Erase</button>
+          <button type="button" data-testid="btn-draw-clear">Clear</button>
+          <button type="button" data-testid="btn-draw-use">Use drawing</button>
+        </div>
+        <label>Contrast
+          <input type="range" data-testid="contrast-slider" min="0" max="2" step="0.05" value="1">
+          <output data-testid="contrast-slider-value"></output>
+        </label>
+        <label>Pixel noise
+          <input type="range" data-testid="pixel-noise-slider" min="0" max="0.5" step="0.01" value="0.05">
+          <output data-testid="pixel-noise-slider-value"></output>
+        </label>
+        <label>Max rate (Hz)
+          <input type="range" data-testid="rate-max-slider" min="10" max="200" step="10" value="80">
+          <output data-testid="rate-max-slider-value"></output>
+        </label>
+        <label><input type="checkbox" data-testid="cycle-toggle"> Cycle orientations</label>
+      </section>
+
+      <details id="params-panel" data-testid="params-panel" open>
+        <summary>Parameters</summary>
+        <label>τ_m (ms)
+          <input type="range" data-testid="param-tauM" min="1" max="50" step="1" value="10">
+          <output data-testid="param-tauM-value"></output>
+        </label>
+        <label>θ (mV)
+          <input type="range" data-testid="param-theta" min="5" max="40" step="0.5" value="15">
+          <output data-testid="param-theta-value"></output>
+        </label>
+        <label>Δ (mV)
+          <input type="range" data-testid="param-delta" min="0.5" max="10" step="0.1" value="2">
+          <output data-testid="param-delta-value"></output>
+        </label>
+        <label>σ_V (mV)
+          <input type="range" data-testid="param-sigmaV" min="0" max="10" step="0.5" value="3">
+          <output data-testid="param-sigmaV-value"></output>
+        </label>
+        <label>E/I balance g
+          <input type="range" data-testid="param-g" min="0" max="8" step="0.1" value="4">
+          <output data-testid="param-g-value"></output>
+        </label>
+        <label>τ_c
+          <input type="range" data-testid="param-tauC" min="0.05" max="5" step="0.05" value="1">
+          <output data-testid="param-tauC-value"></output>
+        </label>
+        <fieldset>
+          <legend>Routing</legend>
+          <label><input type="radio" name="routing" data-testid="routing-hard" value="hard" checked> hard</label>
+          <label><input type="radio" name="routing" data-testid="routing-soft" value="soft"> soft</label>
+        </fieldset>
+        <label>PV mode
+          <select data-testid="param-pvMode">
+            <option value="subtractive">subtractive</option>
+            <option value="divisive">divisive</option>
+            <option value="both">both</option>
+          </select>
+        </label>
+        <label>Attention A
+          <input type="range" data-testid="param-attention" min="0" max="1" step="0.05" value="0.3">
+          <output data-testid="param-attention-value"></output>
+        </label>
+        <label><input type="checkbox" data-testid="param-stdp"> STDP</label>
+        <label><input type="checkbox" data-testid="param-jevControl" checked> JEV control</label>
+        <label><input type="checkbox" data-testid="param-autoJev" checked> Auto JEV</label>
+        <label>JEV interval (sim ms)
+          <input type="range" data-testid="param-jevIntervalMs" min="100" max="5000" step="100" value="500">
+          <output data-testid="param-jevIntervalMs-value"></output>
+        </label>
+        <label>LIVE min interval (wall ms)
+          <input type="range" data-testid="param-liveMinIntervalMs" min="1000" max="10000" step="500" value="2000">
+          <output data-testid="param-liveMinIntervalMs-value"></output>
+        </label>
+        <label>LIVE budget
+          <input type="number" data-testid="param-budget" min="0" max="500" step="1" value="50">
+        </label>
+        <button type="button" data-testid="btn-params-default">Restore defaults</button>
+      </details>
+    </div>
+
+    <section id="circuit-panel" aria-label="Circuit">
+      <svg data-testid="circuit-svg" viewBox="0 0 800 600" role="img" aria-label="Microcircuit activity">
+        <title>Microcircuit activity</title>
+        <text data-testid="layer-label-input" x="8" y="20"></text>
+        <text data-testid="layer-label-L4" x="8" y="230"></text>
+        <text data-testid="layer-label-L23" x="8" y="380"></text>
+        <text data-testid="layer-label-L5" x="8" y="520"></text>
+        <g data-testid="input-grid"></g>
+        <g data-testid="legend"></g>
+      </svg>
+      <div data-testid="tooltip" role="tooltip" hidden></div>
+    </section>
+
+    <aside id="dashboard" aria-label="Dashboard">
+      <section data-testid="readout-panel" aria-label="Readout">
+        <output data-testid="readout-local"></output>
+        <output data-testid="readout-jev"></output>
+        <output data-testid="readout-agree"></output>
+      </section>
+      <canvas data-testid="raster-canvas" width="400" height="240" role="img" aria-label="Raster"></canvas>
+      <canvas data-testid="trace-canvas" width="400" height="120" role="img" aria-label="Score traces"></canvas>
+      <canvas data-testid="noul-canvas" width="400" height="100" role="img" aria-label="Noul trace"></canvas>
+      <div data-testid="choice-bars"></div>
+      <canvas data-testid="rate-canvas" width="400" height="120" role="img" aria-label="Population rates"></canvas>
+      <output data-testid="selected-neuron-label"></output>
+      <table data-testid="compare-table">
+        <thead><tr><th>Quantity</th><th>Local</th><th>JEV</th></tr></thead>
+        <tbody>
+          <tr data-testid="compare-score"></tr>
+          <tr data-testid="compare-noul"></tr>
+          <tr data-testid="compare-choice"></tr>
+        </tbody>
+      </table>
+      <button type="button" data-testid="btn-ask-jev">Ask JEV</button>
+      <ol data-testid="jev-log" aria-live="polite"></ol>
+      <button type="button" data-testid="btn-clear-log">Clear log</button>
+      <button type="button" data-testid="btn-export-recording">Export recording</button>
+      <div data-testid="runaway-warning" role="status" hidden></div>
+      <output data-testid="fps-meter" hidden></output>
+    </aside>
+  </main>
+</div>
+
+<div data-testid="key-modal" role="dialog" aria-modal="true" aria-label="JEV key" hidden>
+  <input type="password" data-testid="key-input" autocomplete="off" aria-label="JEV API key">
+  <label><input type="checkbox" data-testid="key-remember"> Remember on this device</label>
+  <button type="button" data-testid="btn-key-save">Save</button>
+  <button type="button" data-testid="btn-key-cancel">Cancel</button>
+  <button type="button" data-testid="btn-key-forget">Forget</button>
+  <output data-testid="key-masked"></output>
+  <p data-testid="key-error" role="alert"></p>
+  <p data-testid="key-proxy-note" hidden></p>
+</div>
+
+<aside data-testid="about-drawer" role="dialog" aria-label="About" hidden>
+  <button type="button" data-testid="btn-about-close" aria-label="Close">×</button>
+  <section data-testid="about-pitch"></section>
+  <section data-testid="about-mapping"></section>
+  <section data-testid="about-established"></section>
+  <section data-testid="about-proposal"></section>
+  <section data-testid="about-simplification"></section>
+  <section data-testid="about-refs"></section>
+</aside>
+</body>
+</html>
