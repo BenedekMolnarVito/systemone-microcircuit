@@ -30,7 +30,7 @@ export function initInputPanel(store, bus) {
     const b = document.createElement('button');
     b.type = 'button';
     b.setAttribute('data-testid', `stimulus-preset-${id}`);
-    b.title = LABELS[id];
+    b.title = `${LABELS[id]} stimulus; L4 cells respond to oriented edges. See About → Input and circuit (Hubel & Wiesel, 1962).`;
     const c = document.createElement('canvas');
     c.width = c.height = 32;
     c.setAttribute('aria-hidden', 'true');
