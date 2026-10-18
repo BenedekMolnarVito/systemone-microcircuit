@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done: T01-T14, T19, FX1 (M1). playwright.config.mjs written by controller. Running: T15 (opus). Next: T16a+T16b parallel (briefs/T16.md), T18 README; then fix wave for app bugs; T21; T20.
+- Done: T01-T15, T19, FX1 (M2: app runs). Running W8: T16a, T16b (E2E, ports split), T18 README. Next: app-bug fix wave, EVIDENCE.md, T21 smoke, T17 deferred (no key in tests), T20 final review.
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol
