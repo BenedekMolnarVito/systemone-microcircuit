@@ -25,8 +25,15 @@ export function initCircuitView({ store, bus, getNetwork, getSim }) {
   const tip = document.querySelector('[data-testid="tooltip"]');
   const gridG = svg.querySelector('[data-testid="input-grid"]');
   const legendG = svg.querySelector('[data-testid="legend"]');
-  for (const [id, txt] of [['input', 'Input 16×16'], ['L4', 'L4'], ['L23', 'L2/3'], ['L5', 'L5']]) {
-    svg.querySelector(`[data-testid="layer-label-${id}"]`).textContent = txt;
+  for (const [id, txt, about] of [
+    ['input', 'Input 16×16', 'Input pixels; each fires at a rate set by its brightness. See About → Input and circuit.'],
+    ['L4', 'L4', 'Layer 4: orientation-selective cells that receive the pixel input. See About → Input and circuit (Hubel & Wiesel, 1962).'],
+    ['L23', 'L2/3', 'Layer 2/3: excitatory cells plus PV, SST and VIP interneurons; passes L4 activity on to L5. See About → Inhibition (Tremblay et al., 2016).'],
+    ['L5', 'L5', 'Layer 5: output cells whose spikes on the output collateral drive the readout. See About → Input and circuit (Douglas & Martin, 2004).'],
+  ]) {
+    const label = svg.querySelector(`[data-testid="layer-label-${id}"]`);
+    label.textContent = txt;
+    el('title', {}, label).textContent = about; // SVG <text> shows a child <title> as its hover tooltip
   }
 
   // input grid: 16x16 cells of 8 px centred at (400, 70)
