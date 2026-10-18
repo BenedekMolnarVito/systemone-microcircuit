@@ -44,8 +44,8 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T16 | W8 | E2E + screenshots + EVIDENCE | in-progress 2026-10-18 (T16a+T16b parallel; EVIDENCE by controller after) | playwright E01–E34 |
 | T18 | W8 | README | done (commands run per reports/T18.md; E2E cmd pending T16) | commands run |
 | T19 | W8 | CF worker (MAY) | done (node --check, warning verbatim) | node --check + warning verbatim |
-| T17 | W9 | real recording (optional) | todo | needs key → likely deferred |
-| T21 | W9 | smoke scenarios S01–S06 | todo | skill replay 0 calls + smoke.spec |
+| T17 | W9 | real recording (optional) | deferred-human (billed; §8.5 optional human check — run JEV_LIVE_TEST=1 with key) | needs key → likely deferred |
+| T21 | W9 | smoke scenarios S01–S06 | in-progress 2026-10-18 | skill replay 0 calls + smoke.spec |
 | T20 | W9 | final review + DoD | todo | DoD checklist §8.5 |
 | RV1 | — | mid review core+jev | done (0C/3I/7M, reports/RV1.md) | report |
 | FX1 | — | fix RV1 Important (+clear minors) | done (110/112 pass 0 fail) | unit green |
