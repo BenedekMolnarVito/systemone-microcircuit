@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done: W1-W5 (T01-T08, T10-T13). Running: FX1 (RV1 fixes), T09 proxy, T14 key modal+About. Next: T15 main wiring (opus) once all land.
+- Done: W1-W5 (T01-T08, T10-T13). Rate-limited 2026-10-18 night; resumed T09, T14, FX1 (SendMessage). T15 brief ready: briefs/T15.md (dispatch opus after T09+T14+FX1).
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol
