@@ -5,10 +5,12 @@ export function initBanner(store, bus) {
   const $ = (id) => document.querySelector(`[data-testid="${id}"]`);
   const el = $('banner'), text = $('banner-text');
   const persist = new URLSearchParams(location.search).get('test') === '1';
-  let timer = null;
+  let timer = null, last = null;
   const dismiss = () => store.set({ banner: null });
 
   store.subscribe(({ banner }) => {
+    if (banner === last) return; // re-arm the auto-hide timer only when the banner changes (I3)
+    last = banner;
     clearTimeout(timer);
     el.hidden = !banner;
     if (!banner) return;

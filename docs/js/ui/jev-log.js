@@ -52,7 +52,7 @@ export function initJevLog(store, bus, ctx) {
       syncExport();
     }
   });
-  bus.on('jev:error', ({ id, code, message }) => entry(id, `error:${code}`, null, null, message || '', null));
+  bus.on('jev:error', ({ id, code, message }) => entry(id, code === 'aborted' ? 'aborted' : `error:${code}`, null, null, message || '', null));
   bus.on('reset', () => {
     const li = document.createElement('li');
     li.className = 'jev-log-reset'; li.textContent = '— reset —';

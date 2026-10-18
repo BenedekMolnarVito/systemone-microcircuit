@@ -75,12 +75,12 @@ export function initDashboard(store, bus, ctx) {
       const o = a && a.circuit_orientation;
       store.set({ jevReadout: { choice: o ? o.choice : null, confidence: o ? o.confidence : null, modeTag: tag } });
     } else if (a) {
-      const net = ctx.getNetwork(), st = ctx.getSim().state, params = store.get().params;
+      const net = ctx.getNetwork(), sim = ctx.getSim(), st = sim.state, params = store.get().params;
       const i = net.neurons.findIndex((n) => n.id === req.request.state.neuron);
       if (i < 0) return;
       let lc = '—';
       if (net.neurons[i].excitatory) {
-        const p = collateralProbs(net, i, st, params);
+        const p = collateralProbs(net, i, st, params, sim.control.betaOutput);
         lc = net.collaterals[i][p.indexOf(Math.max(...p))].id;
       }
       store.set({ compare: {

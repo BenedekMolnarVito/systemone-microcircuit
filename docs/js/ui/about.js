@@ -54,14 +54,15 @@ export function initAbout(store, bus) {
     opener?.focus?.();
   };
   closeBtn.addEventListener('click', close);
+  drawer.tabIndex = -1; // clicks on dialog text keep focus inside, so the trap below still sees Tab
   drawer.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') { e.preventDefault(); close(); return; }
     if (e.key !== 'Tab') return;
     const f = [...drawer.querySelectorAll(FOCUSABLE)];
     if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    const first = f[0], last = f[f.length - 1], out = !f.includes(document.activeElement);
+    if (e.shiftKey && (out || document.activeElement === first)) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (out || document.activeElement === last)) { e.preventDefault(); first.focus(); }
   });
   bus.on('about:open', open);
   return { open, close };

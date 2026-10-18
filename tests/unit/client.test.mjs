@@ -42,18 +42,32 @@ function make(fetchImpl, extra = {}) {
   return { client, t, events };
 }
 const never = () => new Promise(() => {});
+// every jev:request gets exactly one jev:response or jev:error (dashboard/jev-log contract)
+const oneEach = (events) => {
+  const ids = (names) => events.filter(([e]) => names.includes(e)).map(([, p]) => p.id).sort();
+  assert.deepEqual(ids(['jev:response', 'jev:error']), ids(['jev:request']));
+};
 
-test('U-44 budget cap 2: third LIVE ask is budget_exhausted without fetch', async () => {
+// FR-JEV-13 "When used == cap: switch to SIMULATED" → switch right after the cap-reaching call, not on the next attempt.
+test('U-44 budget cap 2: SIMULATED once used == cap; a further LIVE ask is budget_exhausted without fetch', async () => {
   let n = 0;
-  const { client } = make(async () => { n++; return resp(200, GOOD); });
+  const { client, events } = make(async () => { n++; return resp(200, GOOD); });
   client.setBudgetCap(2);
   assert.equal((await client.ask('circuit', REQ, 0)).status, 'ok');
-  assert.equal((await client.ask('circuit', REQ, 0)).status, 'ok');
+  assert.equal(client.mode, 'LIVE');
+  const second = await client.ask('circuit', REQ, 0);
+  assert.equal(second.status, 'ok');
+  assert.equal(second.mode, 'LIVE');
+  assert.equal(client.mode, 'SIMULATED');
+  assert.ok(events.some(([e, p]) => e === 'banner' && p.level === 'warn' && p.text === 'JEV budget reached (2/2). Continuing in SIMULATED mode.'));
+  assert.ok(events.some(([e, p]) => e === 'mode:changed' && p.mode === 'SIMULATED'));
+  client.setMode('LIVE');
   const r = await client.ask('circuit', REQ, 0);
   assert.equal(r.error.code, 'budget_exhausted');
   assert.equal(n, 2);
   assert.equal(client.mode, 'SIMULATED');
   assert.equal(client.budget.used, 2);
+  oneEach(events);
 });
 
 test('U-45 health returns null for HTML / 404 / missing keySource / reject', async () => {
@@ -126,6 +140,7 @@ test('U-48 abortAll during flight -> aborted, no jev:response; late resolution i
   assert.ok(!events.some(([e]) => e === 'jev:response'));
   assert.ok(events.some(([e, x]) => e === 'jev:error' && x.code === 'aborted'));
   assert.equal(client.inFlight, false);
+  oneEach(events);
 });
 
 test('U-49 setMode(SIMULATED) during flight aborts; next ask is sync emulator', async () => {
@@ -196,12 +211,24 @@ test('U-54 classifyError table', () => {
 });
 
 test('U-54 3 consecutive bad_request -> fallback statuses then SIMULATED', async () => {
-  const { client } = make(async () => resp(400, err('bad_request')));
+  const { client, events } = make(async () => resp(400, err('bad_request')));
   const out = [];
   for (let i = 0; i < 3; i++) out.push(await client.ask('circuit', REQ, 0));
   assert.deepEqual(out.map((r) => r.status), Array(3).fill('fallback:bad_request'));
   assert.ok(out.every((r) => r.response));
   assert.equal(client.mode, 'SIMULATED');
+  assert.ok(events.some(([e, p]) => e === 'banner' && p.text === 'JEV rejected the request format')); // §3.7
+  // fallback/error results are one jev:response each, never an extra jev:error (FR-JEV-14, §3.7 closed status set)
+  assert.equal(events.filter(([e]) => e === 'jev:error').length, 0);
+  assert.equal(events.filter(([e]) => e === 'jev:response').length, 3);
+  oneEach(events);
+});
+
+test('neuron LIVE error -> single jev:response with status error:<code>', async () => {
+  const { client, events } = make(async () => resp(401, err('no_key')));
+  const r = await client.ask('neuron', REQ, 0);
+  assert.equal(r.status, 'error:no_key');
+  assert.deepEqual(events.filter(([e]) => e.startsWith('jev:')).map(([e]) => e), ['jev:request', 'jev:response']);
 });
 
 test('unauthorized: key marked invalid, SIMULATED; malformed 200 -> fallback:malformed', async () => {
@@ -215,9 +242,9 @@ test('unauthorized: key marked invalid, SIMULATED; malformed 200 -> fallback:mal
   assert.equal((await b.client.ask('circuit', REQ, 0)).status, 'fallback:malformed');
 });
 
-test('skips when inside liveMinIntervalMs; budget untouched', async () => {
+test('skips when inside liveMinIntervalMs; budget untouched; skipped ticks emit no events', async () => {
   let t0 = 0;
-  const { client } = make(async () => resp(200, GOOD), { now: () => t0 });
+  const { client, events } = make(async () => resp(200, GOOD), { now: () => t0 });
   client.liveMinIntervalMs = 2000;
   assert.equal((await client.ask('circuit', REQ, 0)).status, 'ok');
   t0 = 1000;
@@ -226,6 +253,22 @@ test('skips when inside liveMinIntervalMs; budget untouched', async () => {
   t0 = 2500;
   assert.equal((await client.ask('circuit', REQ, 0)).status, 'ok');
   assert.equal(client.budget.used, 2);
+  // C1: a skipped tick must not leave a dangling jev:request (would keep btn-ask-jev disabled forever)
+  assert.equal(events.filter(([e]) => e === 'jev:request').length, 2);
+  oneEach(events);
+});
+
+test('skip while in flight emits nothing; in-flight request still resolves once', async () => {
+  let release;
+  const { client, events } = make(() => new Promise((r) => { release = () => r(resp(200, GOOD)); }));
+  const p = client.ask('circuit', REQ, 0);
+  await flush();
+  assert.equal(client.ask('neuron', REQ, 0).status, 'skipped');
+  release();
+  assert.equal((await p).status, 'ok');
+  assert.equal(client.skipped, 1);
+  oneEach(events);
+  assert.equal(events.filter(([e]) => e === 'jev:request').length, 1);
 });
 
 test('U-55 health race: switch away before resolve -> ignored', async () => {

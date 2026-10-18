@@ -86,6 +86,7 @@ function rebuild() {
   popCounts = Object.fromEntries(network.pops.map((p) => [p.id, 0]));
   groupCounts = Object.fromEntries(POPS_GROUPED.map((p) => [p, [0, 0, 0, 0]]));
   uiRng = mulberry32(streamSeed(s.seed, STREAM.UI));
+  if (s.jevReadout || s.compare) store.set({ jevReadout: null, compare: null }); // FR-UI-18 clears readout
 }
 const readout = () => localReadout(sim.routesSince(sim.n - Math.round(200 / DT)), sim.n, network, 200, S().params.routing);
 
@@ -136,7 +137,8 @@ bus.on('jev:request', syncBudget);
 bus.on('jev:response', ({ result }) => {
   syncBudget();
   if (result.status === 'unrecorded') store.set({ unrecorded: S().unrecorded + 1 });
-  if (result.status === 'error:budget_exhausted' && S().params.autoJev) { // FR-JEV-13
+  const b = client.budget;
+  if (result.mode === 'LIVE' && b.used >= b.cap && S().params.autoJev) { // FR-JEV-13: used == cap → autoJev off
     store.set({ params: { ...S().params, autoJev: false } });
     bus.emit('params:changed', { patch: { autoJev: false } });
   }
@@ -147,10 +149,12 @@ bus.on('jev:response', ({ result }) => {
     novelTimer = setTimeout(() => { novel.hidden = true; }, 1000);
   }
 });
-bus.on('jev:error', ({ code }) => {
-  syncBudget();
-  if (code === 'unauthorized' && S().keySource === 'none') bus.emit('key:open', {}); // EC-02
+bus.on('jev:response', ({ result }) => { // §3.7 UI behaviour per client code
+  const code = result.error?.code;
+  if ((code === 'unauthorized' && S().keySource === 'none') || (code === 'no_key' && S().availability.live)) bus.emit('key:open', {}); // EC-02
+  if (code === 'proxy_unreachable') client.health().then(applyHealth); // LIVE disabled until health passes
 });
+bus.on('jev:error', syncBudget); // aborted
 bus.on('jev:ask', ({ ids }) => {
   const id = ids?.[0];
   if (!id || client.inFlight) return;

@@ -4,7 +4,7 @@ import { cycleTheme } from './theme.js';
 const SPEEDS = [10, 25, 50, 100, 250, 500, 1000];
 const MODES = { sim: 'SIMULATED', replay: 'REPLAY', live: 'LIVE' };
 const BADGE = { SIMULATED: 'SIMULATED JEV', REPLAY: 'REPLAY JEV', LIVE: 'LIVE JEV' };
-const NO_PROXY = 'Unavailable: run the local proxy (node tools/jev-proxy.mjs)';
+const NO_PROXY = 'LIVE needs the local proxy: run "node tools/jev-proxy.mjs" and open http://127.0.0.1:8787'; // FR-JEV-05 exact
 const NO_PROXY_KEY = 'Keys can only be used with the local proxy (node tools/jev-proxy.mjs)'; // SPEC E31 exact
 const PITCH = "Score → Noul → spike → Choice: a cortical microcircuit built from JEV's typed primitives.";
 
@@ -47,15 +47,20 @@ export function initHeader(store, bus) {
   });
   $('btn-seed-random').addEventListener('click', () => applySeed(crypto.getRandomValues(new Uint32Array(1))[0]));
 
-  // title carries the tooltip text (tests assert title)
+  // title carries the tooltip text (tests assert title); a hidden span repeats it for aria-describedby (§4.2)
   const setDis = (el, off, title) => {
     el.disabled = off;
-    if (off) el.title = title; else el.removeAttribute('title');
+    const tipId = `${el.dataset.testid}-tip`;
+    let tip = document.getElementById(tipId);
+    if (!tip) { tip = document.createElement('span'); tip.id = tipId; tip.hidden = true; el.after(tip); }
+    if (off) {
+      el.title = title; tip.textContent = title; el.setAttribute('aria-describedby', tipId);
+    } else { el.removeAttribute('title'); el.removeAttribute('aria-describedby'); }
   };
   const render = (s) => {
     $('mode-badge').textContent = BADGE[s.mode] + (s.mode === 'REPLAY' && s.unrecorded > 0 ? ` · ${s.unrecorded} unrecorded` : '');
     for (const [k, mode] of Object.entries(MODES)) $(`mode-select-${k}`).setAttribute('aria-pressed', String(s.mode === mode));
-    setDis($('mode-select-replay'), !s.availability.replay, 'No recording available');
+    setDis($('mode-select-replay'), !s.availability.replay, 'No JEV recording is bundled with this build');
     setDis($('mode-select-live'), !s.availability.live || s.budget.used >= s.budget.cap,
       s.availability.live ? 'LIVE budget used up' : NO_PROXY);
     setDis($('btn-key'), !s.availability.live, NO_PROXY_KEY);

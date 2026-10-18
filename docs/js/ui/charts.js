@@ -8,12 +8,13 @@ const SLOT = ['--accent', '--warn', '--vip'];
 const LAYER_DASH = { L4: [], L2: [5, 3], L5: [1.5, 3] };
 const clsVar = (pop) => (pop.endsWith('PV') ? '--pv' : pop.endsWith('SST') ? '--sst' : pop.endsWith('VIP') ? '--vip' : '--exc');
 
-// SPEC 2.5 softmax over collateral logits from current state (JEV control bias beta not included).
-export function collateralProbs(network, i, state, params) {
+// SPEC 2.5 current p_k: softmax over collateral logits incl. JEV bias beta on L23E `output` (FR-JEV-16), same as sim.js.
+export function collateralProbs(network, i, state, params, betaOutput = 0) {
   const cols = network.collaterals[i] || [];
-  const a = cols.map((c) => c.b + c.gamma * (state.Da[i] / params.theta));
+  const l23 = network.neurons[i].pop === 'L23E', tc = Math.max(0.05, params.tauC);
+  const a = cols.map((c) => c.b + c.gamma * (state.Da[i] / params.theta) + (l23 && c.id === 'output' ? betaOutput : 0));
   const m = Math.max(...a);
-  const e = a.map((x) => Math.exp((x - m) / params.tauC));
+  const e = a.map((x) => Math.exp((x - m) / tc));
   const s = e.reduce((x, y) => x + y, 0);
   return e.map((x) => x / s);
 }
@@ -132,7 +133,7 @@ export function initCharts(store, bus, ctx) {
     }
     if (i < 0 || !net.neurons[i].excitatory) return;
     const params = store.get().params;
-    const p = collateralProbs(net, i, ctx.getSim().state, params);
+    const sim = ctx.getSim(), p = collateralProbs(net, i, sim.state, params, sim.control.betaOutput);
     const soft = params.routing === 'soft';
     const chosen = barEls.map((_, k) => routeLog.reduce((s, r) => (r.src !== i ? s : s + (soft ? r.p[k] : r.k === k ? 1 : 0)), 0));
     const tot = chosen.reduce((a, b) => a + b, 0);

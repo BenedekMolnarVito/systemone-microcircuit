@@ -5,8 +5,9 @@ import http from 'node:http';
 import { createProxy } from '../../tools/jev-proxy.mjs';
 import { circuitRequest, validateResponse } from '../../docs/js/jev/schema.js';
 
-const key = process.env.TYPESAFE_API_KEY;
-const live = process.env.JEV_LIVE_TEST === '1' && !!key;
+const optIn = process.env.JEV_LIVE_TEST === '1';
+const key = optIn && process.env.TYPESAFE_API_KEY; // key read only behind the opt-in gate (FR-TST-08)
+const live = optIn && !!key;
 
 test('live JEV via proxy (1 billed call)', { skip: !live && 'set JEV_LIVE_TEST=1 and TYPESAFE_API_KEY' }, async () => {
   const p = await createProxy({ port: 0, env: { TYPESAFE_API_KEY: key }, log() {} });

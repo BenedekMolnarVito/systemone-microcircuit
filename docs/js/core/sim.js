@@ -192,6 +192,7 @@ export function createSim(network, params, seed, opts = {}) {
     spikeLog = []; routeLog = []; rasterH = FNV0; inputH = FNV0; eWin50 = 0; eWin500 = 0; hot = 0;
     Object.assign(stats, { nanResets: 0, dampGain: 1, runawayActive: false });
     z.fill(0);
+    Object.assign(control, { betaOutput: 0, stdpM: 1 }); // neutral JEV control after reset
     seedStreams(); recomputeRates();
   }
   reset();
@@ -215,6 +216,7 @@ export function createSim(network, params, seed, opts = {}) {
     get params() { return p; },
     get seed() { return curSeed; },
     get stimulusId() { return stimId; },
+    get control() { return { ...control }; },
     state,
     stats,
     spikesSince(n0) {

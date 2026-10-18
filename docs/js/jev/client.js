@@ -98,6 +98,11 @@ export function createJevClient({
     },
 
     ask(kind, request, simTimeMs) {
+      // FR-JEV-09: skipped LIVE ticks emit nothing (no request without a matching response)
+      if (mode === 'LIVE' && (flight || (kind === 'circuit' && now() - lastLiveAt < client.liveMinIntervalMs))) {
+        client.skipped++;
+        return { ok: false, mode: 'LIVE', status: 'skipped', latencyMs: 0, error: { code: 'skipped', message: 'LIVE tick skipped' } };
+      }
       const id = nextId++;
       emit('jev:request', { id, kind, mode, request });
       if (mode === 'LIVE') return live(id, kind, request);
@@ -111,9 +116,10 @@ export function createJevClient({
     },
   };
 
+  // Exactly one event per request: jev:error only for aborted, jev:response otherwise (status encodes errors).
   function finish(id, result) {
-    if (result.error) emit('jev:error', { id, code: result.error.code, message: result.error.message });
-    if (result.status !== 'aborted') emit('jev:response', { id, result });
+    if (result.status === 'aborted') emit('jev:error', { id, code: 'aborted', message: result.error.message });
+    else emit('jev:response', { id, result });
     return result;
   }
 
@@ -124,11 +130,11 @@ export function createJevClient({
     emit('mode:changed', { mode: 'SIMULATED' });
   }
 
+  const budgetBanner = () => `JEV budget reached (${budget.cap}/${budget.cap}). Continuing in SIMULATED mode.`;
+  // FR-JEV-13: switch as soon as used == cap, not on the next attempt
+  const checkCap = () => { if (budget.used >= budget.cap) switchToSim('warn', budgetBanner()); };
+
   async function live(id, kind, request) {
-    if (flight || (kind === 'circuit' && now() - lastLiveAt < client.liveMinIntervalMs)) {
-      client.skipped++;
-      return { ok: false, mode: 'LIVE', status: 'skipped', latencyMs: 0, error: { code: 'skipped', message: 'LIVE tick skipped' } };
-    }
     const f = flight = { ctrl: new AbortController(), aborted: false, timedOut: false };
     const t0 = lastLiveAt = now();
     let err = null, response = null;
@@ -168,11 +174,11 @@ export function createJevClient({
     } finally { flight = null; }
     const latencyMs = now() - t0;
     if (f.aborted) return finish(id, { ok: false, mode: 'LIVE', status: 'aborted', latencyMs, error: { code: 'aborted', message: String(f.reason) } });
-    if (response) { fails = 0; return finish(id, { ok: true, mode: 'LIVE', status: 'ok', latencyMs, response }); }
+    if (response) { fails = 0; checkCap(); return finish(id, { ok: true, mode: 'LIVE', status: 'ok', latencyMs, response }); }
 
     const code = err.code;
     if (code === 'budget_exhausted') {
-      switchToSim('warn', `JEV budget reached (${budget.cap}/${budget.cap}). Continuing in SIMULATED mode.`);
+      switchToSim('warn', budgetBanner());
       return finish(id, { ok: false, mode: 'LIVE', status: 'error:budget_exhausted', latencyMs, error: err });
     }
     if (code === 'unauthorized') {
@@ -183,7 +189,9 @@ export function createJevClient({
     } else if (code === 'forbidden') switchToSim('error', 'No key reached JEV (403)');
     else if (code === 'proxy_unreachable') switchToSim('error', 'Lost connection to the local proxy');
     else if (code === 'no_key') emit('banner', { level: 'info', text: 'Paste a JEV key or set TYPESAFE_API_KEY for the proxy' });
-    if (++fails >= 3) switchToSim('error', `JEV failed 3 times in a row (last: ${code}). Continuing in SIMULATED mode.`);
+    if (++fails >= 3) switchToSim('error', code === 'bad_request' ? 'JEV rejected the request format'
+      : `JEV failed 3 times in a row (last: ${code}). Continuing in SIMULATED mode.`);
+    else checkCap();
     if (kind !== 'circuit') return finish(id, { ok: false, mode: 'LIVE', status: `error:${code}`, latencyMs, error: err });
     return finish(id, { ok: true, mode: 'LIVE', status: `fallback:${code}`, latencyMs, response: emulateNow(request), error: err });
   }
