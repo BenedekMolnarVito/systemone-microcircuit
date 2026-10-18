@@ -50,7 +50,7 @@ export function findMatch(recording, request) {
     if (k.kind !== mk.kind || k.stimulus !== mk.stimulus || k.population !== mk.population) continue;
     if (!Array.isArray(k.questionKeys) || [...k.questionKeys].sort().join(',') !== qk) continue;
     const d = l1(k.features, mk.features);
-    if (d <= limit && d < bestD) { best = e; bestD = d; } // strict < keeps first on ties (lowest i)
+    if (d <= limit && (d < bestD || (d === bestD && e.i < best.i))) { best = e; bestD = d; } // strict < keeps first on ties (lowest i)
   }
   return best ? { entry: best, kind: 'nearest' } : null;
 }

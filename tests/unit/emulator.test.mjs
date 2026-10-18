@@ -38,13 +38,14 @@ test('U-24 circuit response shape', () => {
   }
 });
 
+const COLL = [[{ id: 'ascending' }, { id: 'recurrent' }], [{ id: 'output' }, { id: 'recurrent' }, { id: 'lateral' }], [{ id: 'output' }, { id: 'recurrent' }], []];
 test('U-25 emulator output passes validateResponse for 1000 random summaries', () => {
   const rng = mulberry32(7);
   for (let i = 0; i < 1000; i++) {
     const rate = () => Math.round(rng() * 600) / 10;
     const req = i % 2
       ? withRates(rate(), rate(), rate(), rate())
-      : neuronRequest({ kind: 'neuron_summary', neuron: ['L4E-1', 'L23E-5', 'L5E-3', 'L23PV-0'][i % 4 >> 0], soma_mv: rate() - 20, threshold_mv: 15, apical_mv: rate() / 3, collaterals: i % 4 === 3 ? [] : [{ id: 'output' }, { id: 'recurrent' }, { id: 'lateral' }] });
+      : neuronRequest({ kind: 'neuron_summary', neuron: ['L4E-1', 'L23E-5', 'L5E-3', 'L23PV-0'][(i >> 1) % 4], soma_mv: rate() - 20, threshold_mv: 15, apical_mv: rate() / 3, collaterals: COLL[(i >> 1) % 4] });
     const v = validateResponse(req, emulate(req, { seed: i, callIndex: i }));
     assert.ok(v.ok, v.reason);
   }

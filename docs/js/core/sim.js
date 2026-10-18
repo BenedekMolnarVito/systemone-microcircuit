@@ -50,7 +50,7 @@ export function createSim(network, params, seed, opts = {}) {
   const RING = [inB, inA, inS]; // by comp 0|1|2
 
   let curSeed = seed >>> 0;
-  let p = { ...DEFAULTS, ...params, ...clampParams(params, { allowFixed: true }), seed: curSeed };
+  let p = { ...DEFAULTS, ...clampParams(params, { allowFixed: test }), seed: curSeed };
   let d = derive(p);
   let n = 0, rStim, rIn, rTd, rNoise, rSpike, rRoute;
   let img = new Float32Array(256), stimId = 'blank';
@@ -201,8 +201,8 @@ export function createSim(network, params, seed, opts = {}) {
     stepN(k) { for (let q = 0; q < k; q++) step(); },
     setParams(partial) {
       const c = clampParams(partial, { allowFixed: test });
+      delete c.seed; // topology is seed-built; seed change = caller rebuilds network + createSim (FR-DET-01); reset(seed) reseeds streams only
       p = { ...p, ...c }; d = derive(p); recomputeRates();
-      if ('seed' in c && c.seed !== curSeed) reset(c.seed); else p.seed = curSeed;
     },
     setStimulus(im, id) { img = Float32Array.from(im); stimId = id; recomputeRates(); },
     setControl(c) {

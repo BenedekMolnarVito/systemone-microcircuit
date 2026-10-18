@@ -42,7 +42,7 @@ export function summarizeCircuit(sim, network, windowMs, prevWindow, stimulusId,
     l23_rates_hz: orientRates(c, 'L23E', sec),
     l5_rates_hz: orientRates(c, 'L5E', sec),
     inhibitory_rates_hz: { pv: inh(['L4PV', 'L23PV', 'L5PV'], 10), sst: inh(['L23SST', 'L5SST'], 6), vip: inh(['L23VIP'], 2) },
-    prev_l4_rates_hz: prevWindow ? { ...prevWindow } : { vertical: 0, horizontal: 0, diag45: 0, diag135: 0 },
+    prev_l4_rates_hz: Object.fromEntries(ORI.map((o) => [o, r1(+prevWindow?.[o] || 0)])),
     local_readout: localLabel,
   };
 }
@@ -58,6 +58,7 @@ const ROUTING = {
   L5E: 'Higher apical (top-down) depolarization favors the output collateral.',
 };
 
+// Presynaptic spikes of connected cells (all collateral synapses, regardless of routing; pixel/top-down input excluded)
 // Presynaptic spikes received in the last 10 ms, split by synapse sign (network.trunk/collaterals indexed by source).
 function inputSpikes(sim, network, i) {
   const res = { excitatory: 0, inhibitory: 0 };
@@ -72,6 +73,7 @@ function inputSpikes(sim, network, i) {
 
 export function summarizeNeuron(sim, network, id) {
   const [pre, ks] = id.split('-');
+  if (!POP[pre]) throw new Error(`unknown neuron id: ${id}`);
   const k = Number(ks);
   const i = POP[pre][0] + k;
   const e = pre in GROUP_SIZE;

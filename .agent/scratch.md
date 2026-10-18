@@ -13,3 +13,4 @@
 - T05 BLOCKED (L5E readout 0/10): controller ruling → T05 may edit network.js weight constants + SPEC §2.5 + App A. Resumed. localReadout extra 5th arg routing='hard'.
 - T05: localReadout(..., routing='hard') extra 5th arg → T15 pass 'soft' when soft routing. Weights: ascending 36, output 48 (network.js).
 - T08: client opts getSeed; client.liveMinIntervalMs, setReplay(rec), skipped; call setMode('LIVE') BEFORE health(); budget_exhausted → client switches SIMULATED + banner, T15 turn autoJev off.
+- FX1: sim.setParams drops seed → seed apply = rebuild buildNetwork+createSim (reset(seed) kept). No spikesSince(0) for totals (log retention 10 s).
