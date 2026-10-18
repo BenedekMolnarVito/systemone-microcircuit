@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done: T01-T16, T18, T19, T21, FX1, FX2, RV2. T17 deferred-human. Running: FX3 (opus, RV2 1C/5I fixes). T20 DoD mostly checked (reports/T20.md); after FX3: full unit+E2E rerun, maybe scoped re-review, finish.
+- Done: all tasks except T20 finish; FX3 + M6/M9/M10 committed; unit 135/136, E2E 43/44 (1 skip) w/ fake key. T17 deferred-human. Running: RV3 scoped re-review. Then: close T20, final summary, offer push (user runs git push).
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol

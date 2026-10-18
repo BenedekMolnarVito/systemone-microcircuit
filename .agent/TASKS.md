@@ -52,3 +52,4 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | RV2 | — | final whole-branch review (T20 part) | done (FIX-REQUIRED 1C/5I/13M) | reports/RV2.md |
 | FX2 | — | E12 fixture + EVIDENCE + full E2E | done | reports/FX2.md |
 | FX3 | — | fix RV2 C1+I1-I5 + clear minors | done (controller: unit 135/136 0 fail; E2E 43 pass 1 skip w/ fake key) | unit + full E2E green |
+| RV3 | — | scoped re-review FX3 | in-progress 2026-10-18 | reports/RV3.md |
