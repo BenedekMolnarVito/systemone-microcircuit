@@ -7,4 +7,4 @@ Branch feat/educative-ui. Plan in TASKS.md Phase 4 (E1–E6).
 - Disabled mode/key titles stay SPEC-exact; enabled state gets explanatory title.
 - btn-about label -> "About the science"; a11y test E32 name updated.
 ## Now
-E6: push, PR, independent review. Unit 135 pass/0 fail; E2E 43 pass/1 skip/0 fail (FAKE key).
+Phase 4 done: PR #1 open, reviewed, findings resolved. Deferred-human: visual check of tooltips/About, re-shoot screenshot baselines.

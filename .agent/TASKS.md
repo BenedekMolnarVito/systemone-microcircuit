@@ -62,4 +62,4 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | E3 | About restructure: summary, per-primitive literature, modes; refs = existing 39 (FR-SCI-03) | done afef33a | unit about.test + E13 |
 | E4 | Tooltips on every control/panel/chart, "See About → X (Author, year)" | done 3af9beb, 9148d8f | grep title= list |
 | E5 | Mode tooltips SIM/REPLAY/LIVE from README | done 81814b2 | header.js + e2e |
-| E6 | PR + independent review, findings resolved | in-progress | gh pr view |
+| E6 | PR + independent review, findings resolved | done PR #1, review B1+N1-N5 fixed 3afa7e5, N6/N7 rejected in PR | gh pr view |
