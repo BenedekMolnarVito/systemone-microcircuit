@@ -46,7 +46,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T19 | W8 | CF worker (MAY) | done (node --check, warning verbatim) | node --check + warning verbatim |
 | T17 | W9 | real recording (optional) | deferred-human (billed; §8.5 optional human check — run JEV_LIVE_TEST=1 with key) | needs key → likely deferred |
 | T21 | W9 | smoke scenarios S01–S06 | done (skill replay pass 0 calls, controller re-ran 3 w/o key; smoke.spec 6/6 per child) | skill replay 0 calls + smoke.spec |
-| T20 | W9 | final review + DoD | todo | DoD checklist §8.5 |
+| T20 | W9 | final review + DoD | in-progress (reports/T20.md; waiting FX3) | DoD checklist §8.5 |
 | RV1 | — | mid review core+jev | done (0C/3I/7M, reports/RV1.md) | report |
 | FX1 | — | fix RV1 Important (+clear minors) | done (110/112 pass 0 fail) | unit green |
 | RV2 | — | final whole-branch review (T20 part) | done (FIX-REQUIRED 1C/5I/13M) | reports/RV2.md |

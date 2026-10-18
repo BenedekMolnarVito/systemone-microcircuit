@@ -1,7 +1,7 @@
 # PROGRESS — Phase 3: implement SPEC (started 2026-10-18)
 Phase 1+2 done (SPEC v1.3, README, jev-browser skill). Phase 3 plan: TASKS.md "Phase 3" table, waves W1–W9 from SPEC §8.3.
 ## Now
-- Done: T01-T16, T18, T19, T21, FX1, FX2 (M3 reached; E2E 37 pass w/ fake key; smoke 0-call replay). T17 deferred-human. Running: RV2 final review. Next: FX3 fixes, reword RV2 reports that quote env-key code (U-40 false positive), T20 DoD (enable U-50 tree case).
+- Done: T01-T16, T18, T19, T21, FX1, FX2, RV2. T17 deferred-human. Running: FX3 (opus, RV2 1C/5I fixes). T20 DoD mostly checked (reports/T20.md); after FX3: full unit+E2E rerun, maybe scoped re-review, finish.
 ## Next
 - W2: T02, T06, T10 parallel (same tree; files disjoint; children don't git).
 ## Protocol
