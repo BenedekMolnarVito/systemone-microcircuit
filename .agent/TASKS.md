@@ -41,7 +41,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T09 | W6 | proxy | done (proxy tests green, --help ok) | P-01–P-22 |
 | T14 | W6 | key modal + About | done (U-57 4/4, node --check) | U-57 |
 | T15 | W7 | main wiring + __mc | done (node --check; playwright smoke static+mock pass per child; 3 bugs in T10/T11 files fixed by controller) | node --check + mock-upstream smoke |
-| T16 | W8 | E2E + screenshots + EVIDENCE | in-progress 2026-10-18 (T16a+T16b parallel; EVIDENCE by controller after) | playwright E01–E34 |
+| T16 | W8 | E2E + screenshots + EVIDENCE | done (full run w/ fake key: 37 pass, 1 skip live-real, 0 fail; EVIDENCE 21 shots) |
 | T18 | W8 | README | done (commands run per reports/T18.md; E2E cmd pending T16) | commands run |
 | T19 | W8 | CF worker (MAY) | done (node --check, warning verbatim) | node --check + warning verbatim |
 | T17 | W9 | real recording (optional) | deferred-human (billed; §8.5 optional human check — run JEV_LIVE_TEST=1 with key) | needs key → likely deferred |
@@ -50,3 +50,4 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | RV1 | — | mid review core+jev | done (0C/3I/7M, reports/RV1.md) | report |
 | FX1 | — | fix RV1 Important (+clear minors) | done (110/112 pass 0 fail) | unit green |
 | RV2 | — | final whole-branch review (T20 part) | in-progress 2026-10-18 | reports/RV2.md |
+| FX2 | — | E12 fixture + EVIDENCE + full E2E | done | reports/FX2.md |

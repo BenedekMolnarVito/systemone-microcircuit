@@ -3,8 +3,6 @@ import { readFileSync } from 'node:fs';
 import { MOCK, Q, SHOT, tid, watch, run, state, setRange, open, goLive, waitLog } from './helpers-a.mjs';
 
 test('E12 replay', async ({ page }) => {
-  // SPEC-ISSUE E12: tests/fixtures/recording.json features [.83,.08,.04,.04,.8] vs app vbar [.91,.02,.02,.06,.59]: L1 0.40 > 0.25 limit -> only `unrecorded`. See report.
-  test.fail();
   const errs = watch(page);
   const rec = readFileSync('tests/fixtures/recording.json', 'utf8');
   await page.route('**/data/jev-recording.json', (r) => r.fulfill({ contentType: 'application/json', body: rec }));
@@ -17,7 +15,7 @@ test('E12 replay', async ({ page }) => {
   await tid(page, 'stimulus-preset-vbar').click();
   await run(page, 4000);
   // fixture holds one entry: other requests legitimately log `unrecorded`; at least one must match.
-  await expect.poll(() => tid(page, 'jev-log-entry').filter({ hasText: /(exact|nearest)/ }).count()).toBeGreaterThan(0);
+  await expect.poll(async () => (await tid(page, 'jev-log-entry').allInnerTexts()).filter((t) => /exact|nearest/.test(t)).length).toBeGreaterThan(0);
   await page.screenshot({ path: SHOT('E12-replay'), animations: 'disabled' });
   expect(errs).toEqual([]);
 });
