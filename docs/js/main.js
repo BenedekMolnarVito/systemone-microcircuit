@@ -152,7 +152,7 @@ bus.on('jev:response', ({ result }) => {
 bus.on('jev:response', ({ result }) => { // §3.7 UI behaviour per client code
   const code = result.error?.code;
   if ((code === 'unauthorized' && S().keySource === 'none') || (code === 'no_key' && S().availability.live)) bus.emit('key:open', {}); // EC-02
-  if (code === 'proxy_unreachable') client.health().then(applyHealth); // LIVE disabled until health passes
+  if (code === 'proxy_unreachable') { const tok = modeSel; client.health().then((h) => { if (tok === modeSel) applyHealth(h); }); } // LIVE disabled until health passes; ignore stale result
 });
 bus.on('jev:error', syncBudget); // aborted
 bus.on('jev:ask', ({ ids }) => {

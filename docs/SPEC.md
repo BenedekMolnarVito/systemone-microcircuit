@@ -1418,7 +1418,7 @@ Header comment MUST say verbatim: "Deploying this spends YOUR JEV credits for AN
 | U-41 | keystore.test | Storage whose methods throw → `set` returns ok with `memoryOnly: true`; `get` returns the key; no exception |
 | U-42 | schema.test | Response with `noul: 7` → clamped 1; `noul: "0.5"` → invalid; `choice: "admin"` not in criteria → invalid; probabilities sum 0 → invalid; missing question key → invalid; extra key dropped |
 | U-43 | schema.test | Legend string of 10 000 chars → truncated to 200; contains `<script>` → preserved as text (no transformation), flagged for `textContent` use |
-| U-44 | client.test | Budget cap 2: third LIVE `ask` returns `budget_exhausted` without calling `fetchImpl`; mode becomes SIMULATED |
+| U-44 | client.test | Budget cap 2: mode becomes SIMULATED right after the call that reaches the cap (used = cap, FR-JEV-13); a further LIVE `ask` returns `budget_exhausted` without calling `fetchImpl` |
 | U-45 | client.test | `health()` with fetch returning HTML 200, 404, JSON missing `keySource`, or rejecting → `null` |
 | U-46 | client.test | Fake fetch never resolves → abort at 6000 ms (fake timers) → `timeout`; 3 consecutive → mode SIMULATED |
 | U-47 | client.test | Fake fetch returns 429 `{"error":{"code":"upstream_rate_limited","message":"x"}}` twice, then 200 → success after 2 retries; same with `{"error":{"code":"rate_limited","message":"x"}}` → no retry, tick fallback; delays 1000/2000 ms; `Retry-After: 5` → 5000 ms; budget used = 3 |

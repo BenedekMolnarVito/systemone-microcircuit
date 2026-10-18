@@ -191,7 +191,7 @@ export function createJevClient({
     else if (code === 'no_key') emit('banner', { level: 'info', text: 'Paste a JEV key or set TYPESAFE_API_KEY for the proxy' });
     if (++fails >= 3) switchToSim('error', code === 'bad_request' ? 'JEV rejected the request format'
       : `JEV failed 3 times in a row (last: ${code}). Continuing in SIMULATED mode.`);
-    else checkCap();
+    else if (mode === 'LIVE') checkCap(); // keep the error banner if a switch already happened
     if (kind !== 'circuit') return finish(id, { ok: false, mode: 'LIVE', status: `error:${code}`, latencyMs, error: err });
     return finish(id, { ok: true, mode: 'LIVE', status: `fallback:${code}`, latencyMs, response: emulateNow(request), error: err });
   }
