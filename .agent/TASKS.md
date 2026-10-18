@@ -42,7 +42,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T14 | W6 | key modal + About | done (U-57 4/4, node --check) | U-57 |
 | T15 | W7 | main wiring + __mc | done (node --check; playwright smoke static+mock pass per child; 3 bugs in T10/T11 files fixed by controller) | node --check + mock-upstream smoke |
 | T16 | W8 | E2E + screenshots + EVIDENCE | in-progress 2026-10-18 (T16a+T16b parallel; EVIDENCE by controller after) | playwright E01–E34 |
-| T18 | W8 | README | in-progress 2026-10-18 | commands run |
+| T18 | W8 | README | done (commands run per reports/T18.md; E2E cmd pending T16) | commands run |
 | T19 | W8 | CF worker (MAY) | done (node --check, warning verbatim) | node --check + warning verbatim |
 | T17 | W9 | real recording (optional) | todo | needs key → likely deferred |
 | T21 | W9 | smoke scenarios S01–S06 | todo | skill replay 0 calls + smoke.spec |
