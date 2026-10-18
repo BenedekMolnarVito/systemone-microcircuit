@@ -58,8 +58,8 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | ID | Desc | Status | Verify by |
 |----|------|--------|-----------|
 | E1 | branch feat/educative-ui off synced main | done 2026-10-18 | git branch --show-current |
-| E2 | About button prominent, label/desc "grounded in literature" | todo | a11y test + header.css rule |
-| E3 | About restructure: summary, per-primitive literature, modes; refs = existing 39 (FR-SCI-03) | todo | unit about.test + E13 |
-| E4 | Tooltips on every control/panel/chart, "See About → X (Author, year)" | todo | grep title= list |
-| E5 | Mode tooltips SIM/REPLAY/LIVE from README | todo | header.js + e2e |
-| E6 | PR + independent review, findings resolved | todo | gh pr view |
+| E2 | About button prominent, label/desc "grounded in literature" | done 26e7bc3 | a11y test + header.css rule |
+| E3 | About restructure: summary, per-primitive literature, modes; refs = existing 39 (FR-SCI-03) | done afef33a | unit about.test + E13 |
+| E4 | Tooltips on every control/panel/chart, "See About → X (Author, year)" | done 3af9beb, 9148d8f | grep title= list |
+| E5 | Mode tooltips SIM/REPLAY/LIVE from README | done 81814b2 | header.js + e2e |
+| E6 | PR + independent review, findings resolved | in-progress | gh pr view |
