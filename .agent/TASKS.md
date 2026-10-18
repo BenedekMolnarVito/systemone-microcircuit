@@ -39,7 +39,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T05 | W5 | readout + calibration | done (calibration table all pass; 27/27 core tests controller ran) | U-59, calibration table |
 | T08 | W5 | keystore/client/scheduler | done (keystore+client+scheduler tests green) | U-23, 37, 38, 41, 44–49, 52–56, 58 |
 | T09 | W6 | proxy | in-progress 2026-10-18 | P-01–P-22 |
-| T14 | W6 | key modal + About | in-progress 2026-10-18 | U-57 |
+| T14 | W6 | key modal + About | done (U-57 4/4, node --check) | U-57 |
 | T15 | W7 | main wiring + __mc | todo | node --check + mock-upstream smoke |
 | T16 | W8 | E2E + screenshots + EVIDENCE | todo | playwright E01–E34 |
 | T18 | W8 | README | todo | commands run |
