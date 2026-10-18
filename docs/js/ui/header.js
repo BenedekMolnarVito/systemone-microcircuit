@@ -3,7 +3,7 @@ import { cycleTheme } from './theme.js';
 
 const SPEEDS = [10, 25, 50, 100, 250, 500, 1000];
 const MODES = { sim: 'SIMULATED', replay: 'REPLAY', live: 'LIVE' };
-const BADGE = { SIMULATED: 'SIMULATED', REPLAY: 'REPLAY', LIVE: 'LIVE JEV' };
+const BADGE = { SIMULATED: 'SIMULATED JEV', REPLAY: 'REPLAY JEV', LIVE: 'LIVE JEV' };
 const NO_PROXY = 'Unavailable: run the local proxy (node tools/jev-proxy.mjs)';
 const PITCH = "Score → Noul → spike → Choice: a cortical microcircuit built from JEV's typed primitives.";
 

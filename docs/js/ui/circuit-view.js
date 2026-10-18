@@ -38,7 +38,7 @@ export function initCircuitView({ store, bus, getNetwork, getSim }) {
   // legend
   [['E', 'exc'], ['PV', 'pv'], ['SST', 'sst'], ['VIP', 'vip']].forEach(([t, c], i) => {
     const x = 8 + i * 60;
-    el('circle', { cx: x + 6, cy: 580, r: 6, style: `fill:var(--${c})` }, legendG);
+    el('circle', { cx: x + 6, cy: 580, r: 6 }, legendG).style.fill = `var(--${c})`; // CSP: no style attribute
     el('text', { x: x + 16, y: 584 }, legendG).textContent = t;
   });
   el('text', { x: 260, y: 584 }, legendG).textContent = 'fill = S/θ (Score)';
@@ -142,7 +142,8 @@ export function initCircuitView({ store, bus, getNetwork, getSim }) {
 
   function spawn(pe, op) {
     if (!pe.len || reduced()) { pe.flashUntil = performance.now() + 120; return; }
-    const dot = el('circle', { r: 3, class: 'dot', style: `opacity:${op}` }, gLayer);
+    const dot = el('circle', { r: 3, class: 'particle' }, gLayer);
+    dot.style.opacity = op;
     particles.push({ dot, pe, t0: performance.now(), dur: Math.max(150, 60 * pe.dSteps) });
     if (particles.length > MAX_PARTICLES) particles.shift().dot.remove();
   }
