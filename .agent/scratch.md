@@ -15,3 +15,4 @@
 - T08: client opts getSeed; client.liveMinIntervalMs, setReplay(rec), skipped; call setMode('LIVE') BEFORE health(); budget_exhausted → client switches SIMULATED + banner, T15 turn autoJev off.
 - FX1: sim.setParams drops seed → seed apply = rebuild buildNetwork+createSim (reset(seed) kept). No spikesSince(0) for totals (log retention 10 s).
 - T14: initKeyModal(store,bus,keystore), initAbout(store,bus); ABOUT export. T15: set store.keySource after health(); keystore.enable() only after health passes; modal reads store.availability.live + keySource.
+- Node 25.2.1 + pw 1.49.1: playwright hangs unless PW_DISABLE_TS_ESM=1. E12 fixture recording.json features too far (L1 0.40 >0.25) → regenerate from app vbar features, drop test.fail.
