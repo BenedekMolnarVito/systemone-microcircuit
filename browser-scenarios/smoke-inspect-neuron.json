@@ -1,0 +1,31 @@
+{
+  "name": "smoke-inspect-neuron",
+  "goal": "",
+  "server": "static",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "click",
+      "target": {
+        "testid": "neuron-L4E-1"
+      }
+    },
+    {
+      "op": "js",
+      "js": "window.__mc.runSteps(200)"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"selected-neuron-label\"]').textContent.includes('L4E-1')"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:04:18.850Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}

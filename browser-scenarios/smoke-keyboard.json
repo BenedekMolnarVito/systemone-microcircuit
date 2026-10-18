@@ -1,0 +1,37 @@
+{
+  "name": "smoke-keyboard",
+  "goal": "",
+  "server": "static",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "press",
+      "key": "Space"
+    },
+    {
+      "op": "press",
+      "key": "Space"
+    },
+    {
+      "op": "press",
+      "key": "s"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "window.__mc.getState().run === false"
+    },
+    {
+      "type": "js",
+      "js": "window.__mc.getState().n >= 1"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:04:29.486Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "smoke-about",
+  "goal": "",
+  "server": "static",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "click",
+      "target": {
+        "testid": "btn-about"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "['about-established','about-proposal','about-simplification'].every(id => document.querySelector('[data-testid=\"'+id+'\"]')?.textContent.trim().length > 0)"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:04:22.914Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}

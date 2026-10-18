@@ -1,0 +1,38 @@
+{
+  "name": "smoke-load-static",
+  "goal": "",
+  "server": "static",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "wait_for",
+      "testid": "mode-badge"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"mode-badge\"]').textContent.includes('SIMULATED JEV')"
+    },
+    {
+      "type": "js",
+      "js": "document.querySelectorAll('[data-testid^=\"neuron-\"]').length === 58"
+    },
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"btn-key\"]').disabled === true"
+    },
+    {
+      "type": "console_errors_max",
+      "max": 0,
+      "ignore": "Failed to load resource: the server responded with a status of 404"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:03:48.445Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}

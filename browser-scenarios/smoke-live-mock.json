@@ -1,0 +1,45 @@
+{
+  "name": "smoke-live-mock",
+  "goal": "",
+  "server": "mock",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "click",
+      "target": {
+        "testid": "mode-select-live"
+      }
+    },
+    {
+      "op": "click",
+      "target": {
+        "testid": "btn-ask-jev"
+      }
+    },
+    {
+      "op": "wait_for",
+      "testid": "jev-log-entry"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"mode-badge\"]').textContent.includes('LIVE JEV')"
+    },
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"jev-log-entry\"]').textContent.includes('jev-mock')"
+    },
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"jev-budget\"]').textContent.includes('1 / 50')"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:04:39.237Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}

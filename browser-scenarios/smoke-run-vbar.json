@@ -1,0 +1,35 @@
+{
+  "name": "smoke-run-vbar",
+  "goal": "",
+  "server": "static",
+  "startUrl": "?test=1&autoplay=0&seed=42",
+  "inputs": {},
+  "steps": [
+    {
+      "op": "click",
+      "target": {
+        "testid": "stimulus-preset-vbar"
+      }
+    },
+    {
+      "op": "js",
+      "js": "window.__mc.runSteps(2000)"
+    }
+  ],
+  "assertions": [
+    {
+      "type": "js",
+      "js": "document.querySelector('[data-testid=\"readout-local\"]').textContent.includes('vertical')"
+    },
+    {
+      "type": "js",
+      "js": "window.__mc.getState().t >= 1000"
+    }
+  ],
+  "recorded": {
+    "at": "2026-10-18T03:04:06.728Z",
+    "by": "manual",
+    "jevModel": null,
+    "jevCalls": 0
+  }
+}
