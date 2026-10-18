@@ -5,6 +5,7 @@ const SPEEDS = [10, 25, 50, 100, 250, 500, 1000];
 const MODES = { sim: 'SIMULATED', replay: 'REPLAY', live: 'LIVE' };
 const BADGE = { SIMULATED: 'SIMULATED JEV', REPLAY: 'REPLAY JEV', LIVE: 'LIVE JEV' };
 const NO_PROXY = 'Unavailable: run the local proxy (node tools/jev-proxy.mjs)';
+const NO_PROXY_KEY = 'Keys can only be used with the local proxy (node tools/jev-proxy.mjs)'; // SPEC E31 exact
 const PITCH = "Score → Noul → spike → Choice: a cortical microcircuit built from JEV's typed primitives.";
 
 export function initHeader(store, bus) {
@@ -57,7 +58,7 @@ export function initHeader(store, bus) {
     setDis($('mode-select-replay'), !s.availability.replay, 'No recording available');
     setDis($('mode-select-live'), !s.availability.live || s.budget.used >= s.budget.cap,
       s.availability.live ? 'LIVE budget used up' : NO_PROXY);
-    setDis($('btn-key'), !s.availability.live, NO_PROXY);
+    setDis($('btn-key'), !s.availability.live, NO_PROXY_KEY);
     const play = $('btn-play');
     play.textContent = s.run === 'running' ? 'Pause' : 'Play';
     play.setAttribute('aria-pressed', String(s.run === 'running'));
