@@ -49,3 +49,4 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T20 | W9 | final review + DoD | todo | DoD checklist §8.5 |
 | RV1 | — | mid review core+jev | done (0C/3I/7M, reports/RV1.md) | report |
 | FX1 | — | fix RV1 Important (+clear minors) | done (110/112 pass 0 fail) | unit green |
+| RV2 | — | final whole-branch review (T20 part) | in-progress 2026-10-18 | reports/RV2.md |
