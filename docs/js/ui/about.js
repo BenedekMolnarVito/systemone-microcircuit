@@ -10,7 +10,10 @@ export function initAbout(store, bus) {
   const list = (items, parent) => { const ul = el('ul', null, parent); items.forEach((t) => el('li', t, ul)); };
   const sect = (id, title) => { const s = $(id); s.replaceChildren(); el('h2', title, s); return s; };
 
-  let s = sect('about-pitch', 'What if a neuron were three typed decisions?');
+  let s = sect('about-summary', 'At a glance');
+  list(C.summary, s);
+
+  s = sect('about-pitch', 'What if a neuron were three typed decisions?');
   el('p', C.pitch, s);
 
   s = sect('about-mapping', 'Mapping');
@@ -20,6 +23,9 @@ export function initAbout(store, bus) {
   C.mapping.rows.forEach((r) => { const tr = el('tr', null, body); r.forEach((c) => el('td', c, tr)); });
   el('p', C.mapping.note, s);
 
+  s = sect('about-primitives', 'How each primitive maps to the literature');
+  C.primitives.forEach(({ title, text }) => { el('h3', title, s); el('p', text, s); });
+
   s = sect('about-established', 'Established background');
   list(C.established, s);
 
@@ -28,6 +34,9 @@ export function initAbout(store, bus) {
   list(C.proposal.slice(0, nb), s);
   el('p', C.proposal[nb], s);
   el('blockquote', C.proposal[nb + 1], s);
+
+  s = sect('about-modes', 'Modes: SIM, REPLAY, LIVE');
+  list(C.modes, s);
 
   s = sect('about-simplification', 'Simplifications');
   list(C.simplification, s);

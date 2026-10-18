@@ -98,6 +98,52 @@ const FR_SCI_08 = "Scaling statement (FR-SCI-08): Population sizes are scaled do
 
 const FR_SCI_09 = "In SIMULATED mode the JEV answers are computed by a simple local formula from L4 firing rates, not by the JEV model. Agreement in this mode shows the plumbing, not JEV's judgement. REPLAY and LIVE show genuine JEV answers.";
 
+// Added for scanning (educative UI): restates Sections 1.2–1.4, 2.4–2.8, 3.4 and README with the existing refs only (FR-SCI-03).
+const summary = [
+  "[DEMO] A teaching toy: 58 spiking neurons in a scaled-down layer 4 → 2/3 → 5 visual-cortex column that looks at 16 × 16 pixel images [12–14].",
+  "[PROPOSAL] Each neuron is built from three typed JEV primitives: Score (graded, leaky potential), Noul (probability of a spike within 10 ms) and Choice (which axon collateral carries the spike).",
+  "[ESTABLISHED] The biology underneath — leaky integrate-and-fire neurons, the canonical microcircuit, PV/SST/VIP interneurons, STDP and active dendrites — is established and cited below [12–14, 16, 19–21, 25, 29].",
+  "[PROPOSAL] Expressing a neuron with JEV primitives is the owner's proposal; routing each spike to exactly one collateral is a deliberate, non-biological simplification.",
+  "Every control's tooltip names the section of this page that explains it; numbers in brackets point to the References.",
+];
+
+const primitives = [
+  {
+    title: "Score — graded potential",
+    text: "[DEMO] soma, basal and apical compartments are leaky integrators, `λ = exp(−dt/τ)` with τ_m = 10 ms (Potjans & Diesmann [14]), τ_b = 10 ms and τ_a = 30 ms [DEMO]. [ESTABLISHED] leaky integrate-and-fire neurons are the standard abstraction [16, 17]; dendrites are compartmentalised computational units [29–31]; heterogeneous dendritic time constants help spiking networks learn multi-timescale dynamics [2].",
+  },
+  {
+    title: "Noul — spike probability",
+    text: "[DEMO] `Noul = σ((S − θ)/Δ)` is the probability of at least one spike within W = 10 ms; every 0.5 ms step samples a spike from the derived hazard, then the soma resets to rest with 2 ms refractoriness. θ = 15 mV above rest follows the −50 mV threshold and −65 mV reset of [14]; σ_V adds membrane noise [DEMO]. [ESTABLISHED] escape-noise models make the firing intensity depend on the distance of the membrane potential to threshold [16, 18]; the sigmoid is one simple member of that family.",
+  },
+  {
+    title: "Choice — collateral routing",
+    text: "[DEMO] a softmax with temperature τ_c over each excitatory neuron's collaterals, with logits shifted by apical potential. Hard routing delivers the spike on one sampled collateral; soft routing delivers every collateral scaled by its probability, with the same expected input. [ESTABLISHED] an action potential normally reaches all collaterals; release is probabilistic per synapse [34, 35], branch-point conduction failures are the exception [36], and active dendritic currents can gate cortical output [4]. [PROPOSAL] Hard routing is the owner's proposal, not a biological claim.",
+  },
+  {
+    title: "Inhibition — PV, SST, VIP",
+    text: "[DEMO] PV cells inhibit the soma (subtractive, divisive or both, per PV mode); SST cells inhibit the apical dendrite; VIP cells inhibit SST, so top-down attention A disinhibits pyramidal dendrites; g scales all inhibitory weights and is named after g in [14]. [ESTABLISHED] interneuron classes and their targets [19–21]; divisive normalisation as gain control [28]; excitation–inhibition balance in sparse networks [17]; recurrent excitation and inhibition at each stage of the canonical circuit [12, 13, 15].",
+  },
+  {
+    title: "Plasticity — STDP",
+    text: "Demo (optional, off by default): pair-based STDP on excitatory collateral synapses with exponential windows τ₊ = τ₋ = 20 ms; when JEV control is on, the JEV novelty Noul ν sets a gain M = 0.5 + ν. [ESTABLISHED] the ±20 ms timing window [25], competition between inputs [26], pair-based models [27] and three-factor rules [10]; here without eligibility traces.",
+  },
+  {
+    title: "Input and circuit",
+    text: "[DEMO] pixel intensities set Poisson-like input rates between r_base and r_max; each L4 cell has an elongated, zero-mean receptive field with antagonistic flanks for one of four orientations, and L4 → L2/3 → L5 carries the signal to the readout. [ESTABLISHED] orientation-selective simple cells in primary visual cortex [24]; centre–surround receptive fields [22, 23] (not modelled separately); the canonical layer 4 → 2/3 → 5 pathway [12–15], scaled down as stated under Simplifications.",
+  },
+  {
+    title: "JEV control — semantic layer",
+    text: "[DEMO] Every JEV interval the app sends a numeric circuit summary and asks three typed questions: a Choice (which orientation is present?), a Noul (is this input novel?) and a Score (how strong is the evidence?) [37–39]. With JEV control on, the evidence Score biases the L23E output logit (β ∈ [−0.5, 0.5]) and the novelty Noul scales the STDP gain. [PROPOSAL] This control layer is the owner's proposal; it has no direct biological counterpart.",
+  },
+];
+
+const modes = [
+  "[DEMO] SIM (SIMULATED JEV): a deterministic local stand-in with the same response format as JEV, computed by a simple formula from layer-4 firing rates. No key, no network calls to JEV, no cost; same seed and settings give the same run.",
+  "[DEMO] REPLAY (REPLAY JEV): plays back genuine JEV answers recorded earlier with the local proxy; available only when the build ships a recording. No key, no cost.",
+  "[DEMO] LIVE (LIVE JEV): real JEV calls through the local proxy (`node tools/jev-proxy.mjs`, then open http://127.0.0.1:8787). Needs a key in the proxy's environment or pasted via the Key button (the `--mock-upstream` proxy needs none); each call is billed (about $0.00002) and capped by the per-session LIVE budget.",
+];
+
 const refs = [
   [
     1,
@@ -313,10 +359,13 @@ const simplification = [
 ];
 
 export const ABOUT = Object.freeze({
+  summary,
   pitch,
   mapping: { header: MAPPING_HEADER, rows: mappingRows, note: mappingNote },
+  primitives,
   established,
   proposal: [...proposal, FR_SCI_01, STATEMENT_1_5],
+  modes,
   simplification,
   refs: refs.map(([n, text, href]) => ({ n, text, href })),
 });

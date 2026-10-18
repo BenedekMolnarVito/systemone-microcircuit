@@ -38,7 +38,7 @@ test('E13 about', async ({ page }) => {
   await open(page);
   await tid(page, 'btn-about').click();
   const norm = (s) => s.replace(/\s+/g, ' ');
-  for (const id of ['about-pitch', 'about-mapping', 'about-established', 'about-proposal', 'about-simplification', 'about-refs']) {
+  for (const id of ['about-summary', 'about-pitch', 'about-mapping', 'about-primitives', 'about-established', 'about-proposal', 'about-modes', 'about-simplification', 'about-refs']) {
     await expect(tid(page, id)).toBeVisible();
     expect((await tid(page, id).innerText()).trim().length, id).toBeGreaterThan(20);
   }
