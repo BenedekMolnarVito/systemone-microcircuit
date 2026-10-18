@@ -53,7 +53,7 @@ async function handleJev(request, env) {
   const origin = request.headers.get('origin');
   if (!origin || !allowed.includes(origin)) return fail(403, 'bad_origin', 'Origin not allowed');
   const text = await request.text();
-  if (text.length > MAX_BODY) return fail(413, 'too_large', 'Body exceeds 32768 bytes');
+  if (new TextEncoder().encode(text).length > MAX_BODY) return fail(413, 'too_large', 'Body exceeds 32768 bytes');
   let body;
   try { body = JSON.parse(text); } catch { return fail(400, 'bad_request', 'Invalid JSON'); }
   const bad = checkRequest(body);

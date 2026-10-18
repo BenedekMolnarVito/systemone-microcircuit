@@ -68,8 +68,8 @@ export async function createProxy({ port = 8787, root, budget = 200, rate = 2, r
     entries.push(buildRecordingEntry(entries.length, request.state?.simTimeMs ?? null, request, validated, latency));
     if (validated.usage) {
       usageTotal ??= { input_tokens: 0, output_tokens: 0 };
-      usageTotal.input_tokens += validated.usage.input_tokens;
-      usageTotal.output_tokens += validated.usage.output_tokens;
+      usageTotal.input_tokens += validated.usage.input_tokens ?? 0;
+      usageTotal.output_tokens += validated.usage.output_tokens ?? 0;
     }
     const file = buildRecording({ model: validated.model, usageTotal, app: { commit: null } }, entries);
     fs.writeFileSync(record + '.tmp', JSON.stringify(file, null, 2));
@@ -113,6 +113,7 @@ export async function createProxy({ port = 8787, root, budget = 200, rate = 2, r
       const n = h === undefined ? null : normalizeKey(h);
       if (!n?.ok) return err(res, ctx, 401, 'no_key', 'No JEV key: set TYPESAFE_API_KEY or paste a key in the page.');
       key = n.key;
+      ctx.secrets.push(key); // redact the normalised (trimmed) key too
     }
     const now = Date.now();
     tokens = Math.min(rate, tokens + ((now - last) / 1000) * rate);
