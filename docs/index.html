@@ -46,7 +46,7 @@
       <button type="button" data-testid="btn-seed-apply" title="Use the typed seed and reset the run. See About → Simplifications.">Apply</button>
       <button type="button" data-testid="btn-seed-random" title="Pick a random seed and reset the run. See About → Simplifications." aria-label="Random seed">Random</button>
       <output data-testid="jev-budget" title="LIVE JEV calls used this session out of the budget; the page stops calling JEV at the cap. See About → Modes."></output>
-      <button type="button" data-testid="btn-about" title="Open the science behind the model: every mechanism is grounded in published neuroscience literature (36 cited papers and books), with the original proposal and simplifications marked. Shortcut: A.">About the science</button>
+      <button type="button" data-testid="btn-about" title="Open the science behind the model: the neuroscience it builds on is grounded in published literature (36 cited papers and books); the owner's proposal and simplifications are marked separately. Shortcut: A.">About the science</button>
       <button type="button" data-testid="btn-theme" title="Cycle the colour theme: system, dark, light. See About → At a glance.">Theme</button>
     </div>
   </header>
@@ -127,7 +127,7 @@
           <output data-testid="param-attention-value"></output>
         </label>
         <label><input type="checkbox" data-testid="param-stdp" title="Turn on spike-timing-dependent plasticity of excitatory collateral synapses. See About → Plasticity (Bi &amp; Poo, 1998)."> STDP</label>
-        <label><input type="checkbox" data-testid="param-jevControl" title="Let JEV answers act on the circuit: the evidence Score biases L2/3 output and the novelty Noul gates STDP. See About → JEV control." checked> JEV control</label>
+        <label><input type="checkbox" data-testid="param-jevControl" title="Let JEV answers act on the circuit: the evidence Score biases L2/3 output and the novelty Noul scales the STDP gain. See About → JEV control." checked> JEV control</label>
         <label><input type="checkbox" data-testid="param-autoJev" title="Ask JEV about the circuit automatically every JEV interval. See About → JEV control." checked> Auto JEV</label>
         <label>JEV interval (sim ms)
           <input type="range" data-testid="param-jevIntervalMs" title="Simulated time between automatic JEV circuit questions. See About → JEV control." min="100" max="5000" step="100" value="500">
@@ -166,7 +166,7 @@
       <canvas data-testid="raster-canvas" title="Spike raster: one row per neuron, coloured by population, one tick per spike. See About → Input and circuit (Potjans &amp; Diesmann, 2014)." width="400" height="240" role="img" aria-label="Raster"></canvas>
       <canvas data-testid="trace-canvas" title="Score traces of the selected neurons: soma S with the threshold θ dashed, plus dendritic potentials. See About → Score (London &amp; Häusser, 2005)." width="400" height="120" role="img" aria-label="Score traces"></canvas>
       <canvas data-testid="noul-canvas" title="Noul of the selected neurons: probability of at least one spike within 10 ms. See About → Noul (Gerstner &amp; Kistler, 2002)." width="400" height="100" role="img" aria-label="Noul trace"></canvas>
-      <div data-testid="choice-bars" title="Share of the selected neuron's recent spikes sent down each axon collateral (probability-weighted in soft routing). See About → Choice (Debanne, 2004)."></div>
+      <div data-testid="choice-bars" title="Filled bar: current Choice probability of each axon collateral of the selected neuron; outline: share of its last 1 s of spikes routed there (probability-weighted in soft routing). See About → Choice (Debanne, 2004)."></div>
       <canvas data-testid="rate-canvas" title="Firing rate of each population over time, in Hz. See About → Input and circuit (Potjans &amp; Diesmann, 2014)." width="400" height="120" role="img" aria-label="Population rates"></canvas>
       <output data-testid="selected-neuron-label" title="The neuron shown in the traces; click a neuron in the circuit to change it. See About → Score."></output>
       <table data-testid="compare-table" title="Local values next to JEV's answers for the selected neuron's Score, Noul and Choice, filled by Ask JEV. See About → Modes.">

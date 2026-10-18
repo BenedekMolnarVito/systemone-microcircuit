@@ -10,7 +10,7 @@ const NO_PROXY_KEY = 'Keys can only be used with the local proxy (node tools/jev
 const TIP = {
   sim: 'SIM: simulated JEV answers from a local formula over layer-4 rates; no key, no JEV network calls, no billing. Click to use it (the default). See About → Modes.',
   replay: 'REPLAY: plays back genuine JEV answers recorded earlier with the local proxy; no key, no billing. Click to use the bundled recording. See About → Modes.',
-  live: 'LIVE: real JEV calls through the local proxy; needs a key (proxy environment or the Key button) and every call is billed, up to the LIVE budget. Click to switch. See About → Modes.',
+  live: 'LIVE: real JEV calls through the local proxy; needs a key (proxy environment or the Key button) and every call is billed, up to the LIVE budget (the --mock-upstream proxy needs no key and is free). Click to switch. See About → Modes.',
   key: 'Enter, check or forget the JEV API key used by LIVE mode (K); it is sent only to the local proxy. See About → Modes.',
 };
 const PITCH = "Score → Noul → spike → Choice: a cortical microcircuit built from JEV's typed primitives.";
