@@ -1080,6 +1080,7 @@ tools/
 tests/
   unit/*.test.mjs
   e2e/*.spec.mjs
+  e2e/helpers-*.mjs           # T16: shared E2E helpers (console filter, __mc wrappers)
   e2e/smoke.spec.mjs          # T21: replays browser-scenarios/*.json (FR-TST-12)
   fixtures/recording.json
   screenshots/
