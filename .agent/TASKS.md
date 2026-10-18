@@ -43,7 +43,7 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | T15 | W7 | main wiring + __mc | in-progress 2026-10-18 (opus) | node --check + mock-upstream smoke |
 | T16 | W8 | E2E + screenshots + EVIDENCE | todo | playwright E01–E34 |
 | T18 | W8 | README | todo | commands run |
-| T19 | W8 | CF worker (MAY) | todo | node --check + warning verbatim |
+| T19 | W8 | CF worker (MAY) | in-progress 2026-10-18 | node --check + warning verbatim |
 | T17 | W9 | real recording (optional) | todo | needs key → likely deferred |
 | T21 | W9 | smoke scenarios S01–S06 | todo | skill replay 0 calls + smoke.spec |
 | T20 | W9 | final review + DoD | todo | DoD checklist §8.5 |
