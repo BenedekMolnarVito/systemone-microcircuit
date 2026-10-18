@@ -86,8 +86,8 @@ for (const [file, names] of Object.entries(EXPORTS)) {
   });
 }
 
-// T20 enables this (FR-ARCH-01).
-test('U-50 Section 5.1 file tree complete', { skip: 'enabled by T20' }, () => {
+// Enabled by T20 (FR-ARCH-01).
+test('U-50 Section 5.1 file tree complete', () => {
   const required = [
     'docs/index.html', 'docs/.nojekyll', 'docs/SPEC.md', 'docs/data/jev-recording.json', 'docs/js/boot.js', 'docs/js/main.js',
     ...['tokens', 'base', 'header', 'circuit', 'dashboard', 'panels', 'dialogs'].map((c) => `docs/css/${c}.css`),
