@@ -99,4 +99,5 @@ Requires Node.js 22 or newer for development.
 node --test "tests/unit/*.test.mjs"     # unit tests, no dependencies
 npm ci && npx playwright install chromium && npx playwright test   # end-to-end + screenshots
 ```
+If `npx playwright test` hangs with no output (seen on Node 25 with the pinned Playwright 1.49.1), set `PW_DISABLE_TS_ESM=1` first (bash: `PW_DISABLE_TS_ESM=1 npx playwright test`; PowerShell: `$env:PW_DISABLE_TS_ESM=1; npx playwright test`).
 Screenshots and what each proves: [`tests/EVIDENCE.md`](tests/EVIDENCE.md). Full spec: [`docs/SPEC.md`](docs/SPEC.md).
