@@ -6,3 +6,4 @@ blob-report/
 *.har
 .env
 .env.*
+.agent/
