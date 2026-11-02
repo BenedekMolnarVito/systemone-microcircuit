@@ -3,10 +3,13 @@ import assert from 'node:assert/strict';
 import { ABOUT as A } from '../../docs/js/ui/about-content.js';
 
 const sections = {
+  summary: A.summary,
   pitch: [A.pitch],
   mapping: [...A.mapping.rows.flat(), A.mapping.note],
+  primitives: A.primitives.flatMap((p) => [p.title, p.text]),
   established: A.established,
   proposal: A.proposal,
+  modes: A.modes,
   simplification: A.simplification,
   refs: A.refs.map((r) => r.text),
 };

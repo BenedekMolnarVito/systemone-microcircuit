@@ -53,3 +53,13 @@ Rules: children write only owned files (SPEC §8.2) + `.agent/reports/<id>.md`; 
 | FX2 | — | E12 fixture + EVIDENCE + full E2E | done | reports/FX2.md |
 | FX3 | — | fix RV2 C1+I1-I5 + clear minors | done (controller: unit 135/136 0 fail; E2E 43 pass 1 skip w/ fake key) | unit + full E2E green |
 | RV3 | — | scoped re-review FX3 | done (PASS 0C/0I/4M; m1,m2,m4 fixed by controller, m3 per spec) | reports/RV3.md |
+
+## Phase 4 — educative UI (branch feat/educative-ui, /goal 2026-10-18)
+| ID | Desc | Status | Verify by |
+|----|------|--------|-----------|
+| E1 | branch feat/educative-ui off synced main | done 2026-10-18 | git branch --show-current |
+| E2 | About button prominent, label/desc "grounded in literature" | done 26e7bc3 | a11y test + header.css rule |
+| E3 | About restructure: summary, per-primitive literature, modes; refs = existing 39 (FR-SCI-03) | done afef33a | unit about.test + E13 |
+| E4 | Tooltips on every control/panel/chart, "See About → X (Author, year)" | done 3af9beb, 9148d8f | grep title= list |
+| E5 | Mode tooltips SIM/REPLAY/LIVE from README | done 81814b2 | header.js + e2e |
+| E6 | PR + independent review, findings resolved | done PR #1, review B1+N1-N5 fixed 3afa7e5, N6/N7 rejected in PR | gh pr view |

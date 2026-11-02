@@ -6,7 +6,7 @@ test('E32 CSP + roles + tab order + focus outline', async ({ page }) => {
   await open(page);
   const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
   expect(csp).toContain("connect-src 'self'");
-  for (const name of ['Play', 'Step', 'Reset', 'About', 'Ask JEV']) {
+  for (const name of ['Play', 'Step', 'Reset', 'About the science', 'Ask JEV']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
   // every non-decorative canvas (aria-hidden thumbnails excluded) is an image with a label

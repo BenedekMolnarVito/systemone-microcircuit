@@ -10,3 +10,5 @@
 #banner[data-level="info"] { border-left: 4px solid var(--accent); }
 #banner [data-testid="banner-text"] { flex: 1; }
 #file-protocol-notice { padding: 8px 12px; background: var(--warn); color: var(--bg); }
+/* About is the entry point to the literature, so it reads as a primary action, not a plain link */
+[data-testid="btn-about"] { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 600; }

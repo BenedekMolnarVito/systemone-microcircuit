@@ -26,7 +26,7 @@ export function initDashboard(store, bus, ctx) {
   const inflight = new Map();
   const set = (el, text) => { if (el.textContent !== text) el.textContent = text; };
 
-  panel.title = SCI09;
+  panel.title = `What the circuit thinks it sees: the local readout counts L5 output spikes over 200 ms, next to JEV's answer and whether they agree. ${SCI09} See About → Modes.`;
   const label = document.createElement('span');
   const bars = ORI.map((o) => {
     const row = document.createElement('div'), fill = document.createElement('div');

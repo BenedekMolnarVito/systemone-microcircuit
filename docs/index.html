@@ -24,135 +24,135 @@
     <div class="header-row">
       <h1 data-testid="app-title">SystemOne Microcircuit</h1>
       <p data-testid="pitch"></p>
-      <span data-testid="mode-badge" role="status"></span>
+      <span data-testid="mode-badge" title="Which source is answering JEV questions right now. See About → Modes." role="status"></span>
       <div class="mode-select" role="group" aria-label="Mode">
         <button type="button" data-testid="mode-select-sim" aria-pressed="false">SIM</button>
         <button type="button" data-testid="mode-select-replay" aria-pressed="false">REPLAY</button>
         <button type="button" data-testid="mode-select-live" aria-pressed="false">LIVE</button>
       </div>
       <button type="button" data-testid="btn-key">Key</button>
-      <button type="button" data-testid="btn-play" aria-pressed="false">Play</button>
-      <button type="button" data-testid="btn-step">Step</button>
-      <button type="button" data-testid="btn-reset">Reset</button>
+      <button type="button" data-testid="btn-play" title="Start or pause the simulation (Space). See About → At a glance." aria-pressed="false">Play</button>
+      <button type="button" data-testid="btn-step" title="Pause and advance the simulation by 5 ms of simulated time (S). See About → At a glance.">Step</button>
+      <button type="button" data-testid="btn-reset" title="Restart the run from t = 0 with the current seed and settings (R). See About → Simplifications.">Reset</button>
     </div>
     <div class="header-row">
       <label>Speed
-        <input type="range" data-testid="speed-slider" min="0" max="6" step="1" value="3">
+        <input type="range" data-testid="speed-slider" title="How fast simulated time runs, in simulated ms per wall-clock second; it does not change a SIM run's results. See About → Simplifications." min="0" max="6" step="1" value="3">
       </label>
-      <output data-testid="sim-time">t = 0.0 ms</output>
+      <output data-testid="sim-time" title="Simulated time since the last reset, in ms. See About → At a glance.">t = 0.0 ms</output>
       <label>Seed
-        <input type="text" data-testid="seed-input" inputmode="numeric" value="42">
+        <input type="text" data-testid="seed-input" title="Random seed (0 to 4294967295): the same seed, inputs and settings give an identical SIM or REPLAY run. See About → Simplifications." inputmode="numeric" value="42">
       </label>
-      <button type="button" data-testid="btn-seed-apply">Apply</button>
-      <button type="button" data-testid="btn-seed-random" aria-label="Random seed">Random</button>
-      <output data-testid="jev-budget"></output>
-      <button type="button" data-testid="btn-about">About</button>
-      <button type="button" data-testid="btn-theme">Theme</button>
+      <button type="button" data-testid="btn-seed-apply" title="Use the typed seed and reset the run. See About → Simplifications.">Apply</button>
+      <button type="button" data-testid="btn-seed-random" title="Pick a random seed and reset the run. See About → Simplifications." aria-label="Random seed">Random</button>
+      <output data-testid="jev-budget" title="LIVE JEV calls used this session out of the budget; the page stops calling JEV at the cap. See About → Modes."></output>
+      <button type="button" data-testid="btn-about" title="Open the science behind the model: the neuroscience it builds on is grounded in published literature (36 cited papers and books); the owner's proposal and simplifications are marked separately. Shortcut: A.">About the science</button>
+      <button type="button" data-testid="btn-theme" title="Cycle the colour theme: system, dark, light. See About → At a glance.">Theme</button>
     </div>
   </header>
 
-  <div data-testid="banner" id="banner" role="status" hidden>
+  <div data-testid="banner" title="Status message: warnings hide after 8 s, errors stay until dismissed. See About → Modes." id="banner" role="status" hidden>
     <span data-testid="banner-text"></span>
-    <button type="button" data-testid="banner-dismiss" aria-label="Dismiss">×</button>
+    <button type="button" data-testid="banner-dismiss" title="Dismiss this message. See About → At a glance." aria-label="Dismiss">×</button>
   </div>
 
   <main id="layout">
     <div class="col-left">
-      <section id="input-panel" aria-label="Input">
+      <section id="input-panel" aria-label="Input" title="Choose what the circuit looks at: a 16 × 16 pixel image turned into input spike rates. See About → Input and circuit (Hubel &amp; Wiesel, 1962).">
         <h2>Input</h2>
         <div class="preset-grid" id="stimulus-presets"></div>
-        <canvas data-testid="stimulus-preview" width="128" height="128" role="img" aria-label="Stimulus preview"></canvas>
-        <canvas data-testid="draw-canvas" width="192" height="192" role="img" aria-label="Drawing canvas"></canvas>
+        <canvas data-testid="stimulus-preview" title="The image the circuit currently sees, after contrast (pixel noise not shown). See About → Input and circuit (Hubel &amp; Wiesel, 1962)." width="128" height="128" role="img" aria-label="Stimulus preview"></canvas>
+        <canvas data-testid="draw-canvas" title="Draw your own 16 × 16 stimulus with mouse or touch, then press Use drawing. See About → Input and circuit (Hubel &amp; Wiesel, 1962)." width="192" height="192" role="img" aria-label="Drawing canvas"></canvas>
         <div class="row">
-          <button type="button" data-testid="brush-draw" aria-pressed="true">Draw</button>
-          <button type="button" data-testid="brush-erase" aria-pressed="false">Erase</button>
-          <button type="button" data-testid="btn-draw-clear">Clear</button>
-          <button type="button" data-testid="btn-draw-use">Use drawing</button>
+          <button type="button" data-testid="brush-draw" title="Paint white pixels on the drawing canvas. See About → Input and circuit." aria-pressed="true">Draw</button>
+          <button type="button" data-testid="brush-erase" title="Erase pixels on the drawing canvas back to black. See About → Input and circuit." aria-pressed="false">Erase</button>
+          <button type="button" data-testid="btn-draw-clear" title="Clear the drawing canvas. See About → Input and circuit.">Clear</button>
+          <button type="button" data-testid="btn-draw-use" title="Send the drawing to the circuit as the stimulus. See About → Input and circuit (Hubel &amp; Wiesel, 1962).">Use drawing</button>
         </div>
         <label>Contrast
-          <input type="range" data-testid="contrast-slider" min="0" max="2" step="0.05" value="1">
+          <input type="range" data-testid="contrast-slider" title="Contrast c around mid-grey, x′ = 0.5 + c·(x − 0.5); 1 leaves the image unchanged. See About → Input and circuit." min="0" max="2" step="0.05" value="1">
           <output data-testid="contrast-slider-value"></output>
         </label>
         <label>Pixel noise
-          <input type="range" data-testid="pixel-noise-slider" min="0" max="0.5" step="0.01" value="0.05">
+          <input type="range" data-testid="pixel-noise-slider" title="Standard deviation of Gaussian noise added to each pixel, redrawn every 50 ms. See About → Input and circuit." min="0" max="0.5" step="0.01" value="0.05">
           <output data-testid="pixel-noise-slider-value"></output>
         </label>
         <label>Max rate (Hz)
-          <input type="range" data-testid="rate-max-slider" min="10" max="200" step="10" value="80">
+          <input type="range" data-testid="rate-max-slider" title="Input firing rate r_max of a fully white pixel; black pixels fire at r_base = 2 Hz. See About → Input and circuit." min="10" max="200" step="10" value="80">
           <output data-testid="rate-max-slider-value"></output>
         </label>
-        <label><input type="checkbox" data-testid="cycle-toggle"> Cycle orientations</label>
+        <label><input type="checkbox" data-testid="cycle-toggle" title="Rotate the stimulus through vertical, horizontal and both diagonal bars every 2 s of simulated time. See About → Input and circuit (Hubel &amp; Wiesel, 1962)."> Cycle orientations</label>
       </section>
 
       <details id="params-panel" data-testid="params-panel" open>
-        <summary>Parameters</summary>
+        <summary title="Model parameters; defaults and their sources are listed in About. See About → Simplifications.">Parameters</summary>
         <label>τ_m (ms)
-          <input type="range" data-testid="param-tauM" min="1" max="50" step="1" value="10">
+          <input type="range" data-testid="param-tauM" title="Membrane time constant τ_m: how fast the soma Score leaks back to rest. See About → Score (Potjans &amp; Diesmann, 2014)." min="1" max="50" step="1" value="10">
           <output data-testid="param-tauM-value"></output>
         </label>
         <label>θ (mV)
-          <input type="range" data-testid="param-theta" min="5" max="40" step="0.5" value="15">
+          <input type="range" data-testid="param-theta" title="Threshold θ above rest at which Noul reaches 0.5. See About → Noul (Potjans &amp; Diesmann, 2014)." min="5" max="40" step="0.5" value="15">
           <output data-testid="param-theta-value"></output>
         </label>
         <label>Δ (mV)
-          <input type="range" data-testid="param-delta" min="0.5" max="10" step="0.1" value="2">
+          <input type="range" data-testid="param-delta" title="Escape-noise slope Δ: smaller values make firing more threshold-like. See About → Noul (Gerstner &amp; Kistler, 2002)." min="0.5" max="10" step="0.1" value="2">
           <output data-testid="param-delta-value"></output>
         </label>
         <label>σ_V (mV)
-          <input type="range" data-testid="param-sigmaV" min="0" max="10" step="0.5" value="3">
+          <input type="range" data-testid="param-sigmaV" title="Standard deviation σ_V of the noise added to the membrane potential (a demo value). See About → Noul." min="0" max="10" step="0.5" value="3">
           <output data-testid="param-sigmaV-value"></output>
         </label>
         <label>E/I balance g
-          <input type="range" data-testid="param-g" min="0" max="8" step="0.1" value="4">
+          <input type="range" data-testid="param-g" title="E/I balance g: scales every inhibitory weight by g/4, named after g in Potjans &amp; Diesmann. See About → Inhibition (Potjans &amp; Diesmann, 2014)." min="0" max="8" step="0.1" value="4">
           <output data-testid="param-g-value"></output>
         </label>
         <label>τ_c
-          <input type="range" data-testid="param-tauC" min="0.05" max="5" step="0.05" value="1">
+          <input type="range" data-testid="param-tauC" title="Choice temperature τ_c: low values make routing nearly deterministic, high values spread spikes across collaterals. See About → Choice (Debanne, 2004)." min="0.05" max="5" step="0.05" value="1">
           <output data-testid="param-tauC-value"></output>
         </label>
         <fieldset>
-          <legend>Routing</legend>
-          <label><input type="radio" name="routing" data-testid="routing-hard" value="hard" checked> hard</label>
-          <label><input type="radio" name="routing" data-testid="routing-soft" value="soft"> soft</label>
+          <legend title="How a spike is sent to the axon collaterals. See About → Choice (Debanne, 2004).">Routing</legend>
+          <label><input type="radio" name="routing" data-testid="routing-hard" title="Hard routing: each spike travels down one sampled collateral (the owner's proposal, not biology). See About → Choice (Debanne, 2004)." value="hard" checked> hard</label>
+          <label><input type="radio" name="routing" data-testid="routing-soft" title="Soft routing: each spike reaches every collateral, weighted by its Choice probability, closer to probabilistic release. See About → Choice (Branco &amp; Staras, 2009)." value="soft"> soft</label>
         </fieldset>
         <label>PV mode
-          <select data-testid="param-pvMode">
+          <select data-testid="param-pvMode" title="How PV interneurons inhibit the soma: subtractive jump, divisive shunt, or both. See About → Inhibition (Carandini &amp; Heeger, 2012).">
             <option value="subtractive">subtractive</option>
             <option value="divisive">divisive</option>
             <option value="both">both</option>
           </select>
         </label>
         <label>Attention A
-          <input type="range" data-testid="param-attention" min="0" max="1" step="0.05" value="0.3">
+          <input type="range" data-testid="param-attention" title="Top-down attention A: drives VIP cells and apical dendrites, so VIP inhibits SST and disinhibits pyramidal cells. See About → Inhibition (Pi et al., 2013)." min="0" max="1" step="0.05" value="0.3">
           <output data-testid="param-attention-value"></output>
         </label>
-        <label><input type="checkbox" data-testid="param-stdp"> STDP</label>
-        <label><input type="checkbox" data-testid="param-jevControl" checked> JEV control</label>
-        <label><input type="checkbox" data-testid="param-autoJev" checked> Auto JEV</label>
+        <label><input type="checkbox" data-testid="param-stdp" title="Turn on spike-timing-dependent plasticity of excitatory collateral synapses. See About → Plasticity (Bi &amp; Poo, 1998)."> STDP</label>
+        <label><input type="checkbox" data-testid="param-jevControl" title="Let JEV answers act on the circuit: the evidence Score biases L2/3 output and the novelty Noul scales the STDP gain. See About → JEV control." checked> JEV control</label>
+        <label><input type="checkbox" data-testid="param-autoJev" title="Ask JEV about the circuit automatically every JEV interval. See About → JEV control." checked> Auto JEV</label>
         <label>JEV interval (sim ms)
-          <input type="range" data-testid="param-jevIntervalMs" min="100" max="5000" step="100" value="500">
+          <input type="range" data-testid="param-jevIntervalMs" title="Simulated time between automatic JEV circuit questions. See About → JEV control." min="100" max="5000" step="100" value="500">
           <output data-testid="param-jevIntervalMs-value"></output>
         </label>
         <label>LIVE min interval (wall ms)
-          <input type="range" data-testid="param-liveMinIntervalMs" min="1000" max="10000" step="500" value="2000">
+          <input type="range" data-testid="param-liveMinIntervalMs" title="Minimum wall-clock time between LIVE JEV calls, to limit cost. See About → Modes." min="1000" max="10000" step="500" value="2000">
           <output data-testid="param-liveMinIntervalMs-value"></output>
         </label>
         <label>LIVE budget
-          <input type="number" data-testid="param-budget" min="0" max="500" step="1" value="50">
+          <input type="number" data-testid="param-budget" title="Maximum LIVE JEV calls this session; at the cap LIVE is disabled. See About → Modes." min="0" max="500" step="1" value="50">
         </label>
-        <button type="button" data-testid="btn-params-default">Restore defaults</button>
+        <button type="button" data-testid="btn-params-default" title="Restore every parameter to its default; seed and speed stay as they are. See About → Simplifications.">Restore defaults</button>
       </details>
     </div>
 
     <section id="circuit-panel" aria-label="Circuit">
       <svg data-testid="circuit-svg" viewBox="0 0 800 600" role="img" aria-label="Microcircuit activity">
-        <title>Microcircuit activity</title>
+        <title>The 58-neuron circuit: input pixels, then L4, L2/3 and L5; neurons glow with their Score and dots travel along the chosen collateral; click to inspect, Shift+click to compare up to 3. See About → Input and circuit (Potjans &amp; Diesmann, 2014).</title>
         <text data-testid="layer-label-input" x="8" y="20"></text>
         <text data-testid="layer-label-L4" x="8" y="230"></text>
         <text data-testid="layer-label-L23" x="8" y="380"></text>
         <text data-testid="layer-label-L5" x="8" y="520"></text>
         <g data-testid="input-grid"></g>
-        <g data-testid="legend"></g>
+        <g data-testid="legend"><title>Colours mark populations, fill shows S/θ (Score), and the last symbol marks a spike. See About → Mapping.</title></g>
       </svg>
       <div data-testid="tooltip" role="tooltip" hidden></div>
     </section>
@@ -163,13 +163,13 @@
         <output data-testid="readout-jev"></output>
         <output data-testid="readout-agree"></output>
       </section>
-      <canvas data-testid="raster-canvas" width="400" height="240" role="img" aria-label="Raster"></canvas>
-      <canvas data-testid="trace-canvas" width="400" height="120" role="img" aria-label="Score traces"></canvas>
-      <canvas data-testid="noul-canvas" width="400" height="100" role="img" aria-label="Noul trace"></canvas>
-      <div data-testid="choice-bars"></div>
-      <canvas data-testid="rate-canvas" width="400" height="120" role="img" aria-label="Population rates"></canvas>
-      <output data-testid="selected-neuron-label"></output>
-      <table data-testid="compare-table">
+      <canvas data-testid="raster-canvas" title="Spike raster: one row per neuron, coloured by population, one tick per spike. See About → Input and circuit (Potjans &amp; Diesmann, 2014)." width="400" height="240" role="img" aria-label="Raster"></canvas>
+      <canvas data-testid="trace-canvas" title="Score traces of the selected neurons: soma S with the threshold θ dashed, plus dendritic potentials. See About → Score (London &amp; Häusser, 2005)." width="400" height="120" role="img" aria-label="Score traces"></canvas>
+      <canvas data-testid="noul-canvas" title="Noul of the selected neurons: probability of at least one spike within 10 ms. See About → Noul (Gerstner &amp; Kistler, 2002)." width="400" height="100" role="img" aria-label="Noul trace"></canvas>
+      <div data-testid="choice-bars" title="Filled bar: current Choice probability of each axon collateral of the selected neuron; outline: share of its last 1 s of spikes routed there (probability-weighted in soft routing). See About → Choice (Debanne, 2004)."></div>
+      <canvas data-testid="rate-canvas" title="Firing rate of each population over time, in Hz. See About → Input and circuit (Potjans &amp; Diesmann, 2014)." width="400" height="120" role="img" aria-label="Population rates"></canvas>
+      <output data-testid="selected-neuron-label" title="The neuron shown in the traces; click a neuron in the circuit to change it. See About → Score."></output>
+      <table data-testid="compare-table" title="Local values next to JEV's answers for the selected neuron's Score, Noul and Choice, filled by Ask JEV. See About → Modes.">
         <thead><tr><th>Quantity</th><th>Local</th><th>JEV</th></tr></thead>
         <tbody>
           <tr data-testid="compare-score"></tr>
@@ -177,33 +177,36 @@
           <tr data-testid="compare-choice"></tr>
         </tbody>
       </table>
-      <button type="button" data-testid="btn-ask-jev">Ask JEV</button>
-      <ol data-testid="jev-log" aria-live="polite"></ol>
-      <button type="button" data-testid="btn-clear-log">Clear log</button>
-      <button type="button" data-testid="btn-export-recording">Export recording</button>
-      <div data-testid="runaway-warning" role="status" hidden></div>
-      <output data-testid="fps-meter" hidden></output>
+      <button type="button" data-testid="btn-ask-jev" title="Ask JEV about the selected neuron's Score, Noul and Choice (J); one billed call in LIVE. See About → JEV control.">Ask JEV</button>
+      <ol data-testid="jev-log" title="Log of JEV calls with time, mode, kind, status, latency and answers; expand an entry for the full request and response. See About → JEV control." aria-live="polite"></ol>
+      <button type="button" data-testid="btn-clear-log" title="Clear the JEV call log. See About → JEV control.">Clear log</button>
+      <button type="button" data-testid="btn-export-recording" title="Download this session's successful LIVE calls as a recording for REPLAY mode. See About → Modes.">Export recording</button>
+      <div data-testid="runaway-warning" title="Shown when excitatory activity runs away and excitation is automatically damped. See About → Simplifications." role="status" hidden></div>
+      <output data-testid="fps-meter" title="Frames drawn per second (diagnostic). See About → At a glance." hidden></output>
     </aside>
   </main>
 </div>
 
-<div data-testid="key-modal" role="dialog" aria-modal="true" aria-label="JEV key" hidden>
-  <input type="password" data-testid="key-input" autocomplete="off" aria-label="JEV API key">
-  <label><input type="checkbox" data-testid="key-remember"> Remember on this device</label>
-  <button type="button" data-testid="btn-key-save">Save</button>
-  <button type="button" data-testid="btn-key-cancel">Cancel</button>
-  <button type="button" data-testid="btn-key-forget">Forget</button>
-  <output data-testid="key-masked"></output>
+<div data-testid="key-modal" title="Enter a JEV key for LIVE mode; it is used only by the local proxy. See About → Modes." role="dialog" aria-modal="true" aria-label="JEV key" hidden>
+  <input type="password" data-testid="key-input" title="Your TypeSafe JEV API key; it goes only to the local proxy and never into URLs, logs or recordings. See About → Modes." autocomplete="off" aria-label="JEV API key">
+  <label><input type="checkbox" data-testid="key-remember" title="Keep the key in this browser's storage across visits; otherwise it is kept for this tab only. See About → Modes."> Remember on this device</label>
+  <button type="button" data-testid="btn-key-save" title="Save the key and close. See About → Modes.">Save</button>
+  <button type="button" data-testid="btn-key-cancel" title="Close without saving. See About → Modes.">Cancel</button>
+  <button type="button" data-testid="btn-key-forget" title="Delete the stored key from this browser. See About → Modes.">Forget</button>
+  <output data-testid="key-masked" title="The stored key, masked. See About → Modes."></output>
   <p data-testid="key-error" role="alert"></p>
   <p data-testid="key-proxy-note" hidden></p>
 </div>
 
 <aside data-testid="about-drawer" role="dialog" aria-label="About" hidden>
-  <button type="button" data-testid="btn-about-close" aria-label="Close">×</button>
+  <button type="button" data-testid="btn-about-close" title="Close About (Esc). See About → At a glance." aria-label="Close">×</button>
+  <section data-testid="about-summary"></section>
   <section data-testid="about-pitch"></section>
   <section data-testid="about-mapping"></section>
+  <section data-testid="about-primitives"></section>
   <section data-testid="about-established"></section>
   <section data-testid="about-proposal"></section>
+  <section data-testid="about-modes"></section>
   <section data-testid="about-simplification"></section>
   <section data-testid="about-refs"></section>
 </aside>
